@@ -41,10 +41,11 @@ export default function Layout({ children }) {
 
   function handlePersonaChange(e) {
     const val = e.target.value;
-    setPersona(val);
     localStorage.setItem("currentPersona", val);
     if (router.pathname === "/dashboard" && val !== "Hakan") {
       router.push("/");
+    } else {
+      router.reload();
     }
   }
 
