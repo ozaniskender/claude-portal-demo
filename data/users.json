@@ -1,0 +1,49 @@
+[
+  {
+    "id": "burcak",
+    "name": "Burçak Göksel",
+    "email": "burcak.goksel@definex.com.tr",
+    "role": "user",
+    "capability": "claude-sonnet-4",
+    "jobTitle": "Senior Yazılım Geliştirici",
+    "manager": "zeynep"
+  },
+  {
+    "id": "zeynep",
+    "name": "Zeynep Şen",
+    "email": "zeynep.sen@definex.com.tr",
+    "role": "manager",
+    "capability": "claude-opus-4",
+    "jobTitle": "Yazılım Geliştirme Müdürü",
+    "manager": null
+  },
+  {
+    "id": "hakan",
+    "name": "Hakan Kormanlı",
+    "email": "hakan.yilmaz@definex.com.tr",
+    "role": "license_admin",
+    "capability": "claude-opus-4",
+    "jobTitle": "IT Sistem Yöneticisi",
+    "manager": null
+  },
+  {
+    "id": "ali",
+    "name": "Ali Demir",
+    "email": "ali.demir@teamdefinex.com",
+    "role": "user",
+    "capability": "claude-sonnet-4",
+    "jobTitle": "Senior Developer",
+    "department": "Tech Consulting",
+    "manager": "zeynep"
+  },
+  {
+    "id": "mert",
+    "name": "Mert Yıldız",
+    "email": "mert.yildiz@teamdefinex.com",
+    "role": "user",
+    "capability": "claude-haiku-4",
+    "jobTitle": "Consultant",
+    "department": "AI & Analytics",
+    "manager": "zeynep"
+  }
+]
