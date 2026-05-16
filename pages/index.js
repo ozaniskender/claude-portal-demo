@@ -44,12 +44,6 @@ export default function Home() {
           <h1 className="text-[32px] font-bold leading-tight mb-3 text-white">
             Lisans Yönetim Portalı
           </h1>
-          <p className="text-white/60 text-[15px] leading-relaxed mb-7">
-            Definex çalışanları için Claude Enterprise lisans taleplerini,
-            spend kademesi değişikliklerini ve custom role değişikliklerini
-            buradan yönetin.
-          </p>
-
           {openCount !== null && openCount > 0 && (
             <div className="mb-6 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-primary/20 border border-brand-primary/30 text-[#8FAEED] text-[13px] font-medium">
               <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-brand-primary text-white text-[11px] font-semibold">
