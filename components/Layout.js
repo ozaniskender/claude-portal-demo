@@ -36,13 +36,31 @@ function NavLink({ href, label, isActive }) {
 export default function Layout({ children }) {
   const [persona, setPersona] = useState("Burçak");
   const [mounted, setMounted] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
+    if (router.pathname === "/login") {
+      setIsCheckingAuth(false);
+      const saved = localStorage.getItem("currentPersona");
+      if (saved) setPersona(saved);
+      setMounted(true);
+      return;
+    }
+    const authed = localStorage.getItem("isAuthenticated") === "true";
+    if (!authed) {
+      router.push("/login");
+      return;
+    }
     const saved = localStorage.getItem("currentPersona");
     if (saved) setPersona(saved);
     setMounted(true);
+    setIsCheckingAuth(false);
   }, []);
+
+  if (isCheckingAuth && router.pathname !== "/login") {
+    return <div className="min-h-screen bg-brand-soft-blue" />;
+  }
 
   function handlePersonaChange(e) {
     const val = e.target.value;
@@ -52,6 +70,12 @@ export default function Layout({ children }) {
     } else {
       router.reload();
     }
+  }
+
+  function handleLogout() {
+    localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("currentPersona");
+    router.push("/login");
   }
 
   const navLinks = persona === "Hakan" ? HAKAN_NAV : BASE_NAV;
@@ -89,7 +113,7 @@ export default function Layout({ children }) {
             ))}
           </nav>
 
-          {/* Persona switcher */}
+          {/* Persona switcher + Logout */}
           {mounted && (
             <div className="flex items-center gap-2.5 shrink-0">
               <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-[11px] font-bold ${currentPersona.color}`}>
@@ -107,6 +131,18 @@ export default function Layout({ children }) {
                   </option>
                 ))}
               </select>
+
+              {/* Logout button */}
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-1.5 px-2.5 py-1 text-[12px] text-white/60 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                title="Çıkış yap"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Çıkış
+              </button>
             </div>
           )}
         </div>

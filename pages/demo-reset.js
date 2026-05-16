@@ -10,8 +10,10 @@ export default function DemoReset() {
 
   function handleReset() {
     resetSeedData();
+    localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("currentPersona");
     setDone(true);
-    setTimeout(() => router.push("/"), 3000);
+    setTimeout(() => router.push("/login"), 3000);
   }
 
   return (
@@ -27,7 +29,7 @@ export default function DemoReset() {
                 </svg>
               </div>
               <p className="text-[16px] font-semibold text-content-primary mb-2">Demo verisi sıfırlandı</p>
-              <p className="text-[13px] text-content-secondary">Ana sayfaya yönlendiriliyorsunuz...</p>
+              <p className="text-[13px] text-content-secondary">Demo verisi sıfırlandı, çıkış yapıldı. Giriş ekranına yönlendiriliyorsunuz...</p>
             </div>
           ) : (
             <div className="px-8 py-10">
