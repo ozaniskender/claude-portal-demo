@@ -8,10 +8,10 @@ export const spendTrendData = [
 ];
 
 export const kademeData = [
-  { name: 'Entry',    value: 18, color: '#a8c489' },
-  { name: 'Medium',  value: 52, color: '#5a8fc2' },
-  { name: 'High',    value: 20, color: '#d4a259' },
-  { name: 'Very High', value: 4, color: '#c14545' },
+  { name: 'Entry',     value: 18, color: '#DEE8FD' },
+  { name: 'Medium',   value: 52, color: '#2249D6' },
+  { name: 'High',     value: 20, color: '#C66130' },
+  { name: 'Very High', value: 4, color: '#A7491F' },
 ];
 
 export const accountBreakdownData = [

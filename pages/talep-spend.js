@@ -8,7 +8,7 @@ import users from "@/data/users.json";
 const burcak = users.find((u) => u.id === "burcak");
 const zeynep = users.find((u) => u.id === "zeynep");
 
-const SELECT_ARROW = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235f5e5a' d='M2 4l4 4 4-4'/%3E%3C/svg%3E")`;
+const SELECT_ARROW = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%233B4A6B' d='M2 4l4 4 4-4'/%3E%3C/svg%3E")`;
 
 function StyledSelect({ value, onChange, options, disabled }) {
   return (
@@ -16,7 +16,7 @@ function StyledSelect({ value, onChange, options, disabled }) {
       value={value}
       onChange={onChange}
       disabled={disabled}
-      className="w-full px-3 py-2 text-sm border border-black/20 rounded-lg bg-white text-[#1c1c1a] appearance-none focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:bg-[#f4f3ef] disabled:text-[#888780]"
+      className="w-full px-3 py-2 text-sm border border-surface-bordered rounded-lg bg-surface text-content-primary appearance-none focus:outline-none focus:ring-2 focus:ring-brand-primary/40 disabled:bg-surface-subtle disabled:text-content-tertiary"
       style={{ backgroundImage: SELECT_ARROW, backgroundRepeat: "no-repeat", backgroundPosition: "right 12px center", paddingRight: "32px" }}
     >
       {options.map((o) => <option key={o} value={o}>{o}</option>)}
@@ -63,7 +63,7 @@ export default function TalepSpend() {
     return (
       <Layout>
         <div className="flex items-center justify-center min-h-[50vh]">
-          <p className="text-[#5f5e5a] text-sm">Bu sayfayı sadece kullanıcı görebilir.</p>
+          <p className="text-content-secondary text-sm">Bu sayfayı sadece kullanıcı görebilir.</p>
         </div>
       </Layout>
     );
@@ -78,18 +78,21 @@ export default function TalepSpend() {
     <Layout>
       <Head><title>Spend Kademesi Değişikliği · Definex</title></Head>
       <div className="max-w-[820px] mx-auto">
-        <div className="bg-white rounded-xl border border-black/10 overflow-hidden shadow-sm">
-          <div className="px-6 py-5 border-b border-black/10">
-            <p className="font-medium text-[18px] text-[#1c1c1a] mb-0.5">Yeni talep oluştur</p>
-            <p className="text-[13px] text-[#5f5e5a]">
-              Mevcut harcama kademenizi değiştirmek için aşağıdaki formu doldurun.
-            </p>
+        <div className="bg-surface rounded-card border border-surface-bordered shadow-card overflow-hidden">
+          <div className="px-6 py-5 border-b border-surface-bordered flex items-start gap-3">
+            <div className="w-1 h-5 rounded-full bg-brand-primary mt-0.5 shrink-0" />
+            <div>
+              <p className="font-semibold text-[17px] text-content-primary mb-0.5">Yeni talep oluştur</p>
+              <p className="text-[13px] text-content-secondary">
+                Mevcut harcama kademenizi değiştirmek için aşağıdaki formu doldurun.
+              </p>
+            </div>
           </div>
 
           <div className="px-6 py-6">
             {/* Talep Tipi */}
             <div className="mb-5">
-              <label className="block text-[13px] font-medium text-[#1c1c1a] mb-1.5">Talep tipi</label>
+              <label className="block text-[13px] font-medium text-content-primary mb-1.5">Talep tipi</label>
               <StyledSelect
                 value="Spend Kademesi Değişikliği"
                 onChange={handleTalepTipiChange}
@@ -98,12 +101,12 @@ export default function TalepSpend() {
             </div>
 
             {/* Profil Kartı */}
-            <div className="bg-[#f4f3ef] rounded-lg px-[18px] py-4 mb-6">
+            <div className="bg-surface-muted rounded-xl border border-surface-bordered px-[18px] py-4 mb-6">
               <div className="flex items-center gap-1.5 mb-3">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5f5e5a" strokeWidth="2">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7894" strokeWidth="2">
                   <rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0110 0v4" />
                 </svg>
-                <span className="text-[11px] font-medium text-[#5f5e5a] uppercase tracking-wider">Profil bilgileri · Azure AD</span>
+                <span className="text-[11px] font-semibold text-content-tertiary uppercase tracking-wider">Profil bilgileri · Azure AD</span>
               </div>
               <div className="grid grid-cols-2 gap-y-3.5 gap-x-5">
                 {[
@@ -115,8 +118,8 @@ export default function TalepSpend() {
                   ["Talep tarihi", requestDate],
                 ].map(([label, value]) => (
                   <div key={label}>
-                    <p className="text-[10px] text-[#888780] uppercase tracking-wider mb-0.5">{label}</p>
-                    <p className="text-[14px] text-[#1c1c1a]">{value}</p>
+                    <p className="text-[10px] text-content-tertiary uppercase tracking-wider mb-0.5 font-semibold">{label}</p>
+                    <p className="text-[14px] text-content-primary">{value}</p>
                   </div>
                 ))}
               </div>
@@ -124,8 +127,8 @@ export default function TalepSpend() {
 
             {/* Talep Edilen Kademe */}
             <div className="mb-5">
-              <label className="block text-[13px] font-medium text-[#1c1c1a] mb-1.5">
-                Talep edilen kademe<span className="text-[#791f1f] ml-0.5">*</span>
+              <label className="block text-[13px] font-medium text-content-primary mb-1.5">
+                Talep edilen kademe<span className="text-state-danger ml-0.5">*</span>
               </label>
               <StyledSelect
                 value={requestedTier}
@@ -136,39 +139,39 @@ export default function TalepSpend() {
 
             {/* Gerekçe */}
             <div className="mb-5">
-              <label className="block text-[13px] font-medium text-[#1c1c1a] mb-1.5">
-                Gerekçe<span className="text-[#791f1f] ml-0.5">*</span>
+              <label className="block text-[13px] font-medium text-content-primary mb-1.5">
+                Gerekçe<span className="text-state-danger ml-0.5">*</span>
               </label>
-              <p className="text-[12px] text-[#5f5e5a] mb-1.5">
+              <p className="text-[12px] text-content-secondary mb-1.5">
                 Neden değişiklik talep ediyorsunuz? Yeni iş yükünüz veya kullanım pattern&apos;iniz nedir?
               </p>
               <textarea
                 value={gerekce}
                 onChange={(e) => setGerekce(e.target.value)}
                 placeholder="Örn: İş Bankası PYS projesinin yeni fazında günlük olarak büyük döküman analizleri ve müşteri profil raporları oluşturuyorum. Son iki ay Medium limit'i sürekli aştı..."
-                className="w-full px-3 py-2 text-sm border border-black/20 rounded-lg bg-white text-[#1c1c1a] resize-y min-h-[90px] focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full px-3 py-2 text-sm border border-surface-bordered rounded-lg bg-surface text-content-primary resize-y min-h-[90px] focus:outline-none focus:ring-2 focus:ring-brand-primary/40"
               />
-              <p className={`text-[11px] mt-1 text-right ${gerekce.length >= 50 ? "text-[#27500a]" : "text-[#888780]"}`}>
+              <p className={`text-[11px] mt-1 text-right ${gerekce.length >= 50 ? "text-state-success" : "text-content-tertiary"}`}>
                 {gerekce.length} / 50 karakter
               </p>
             </div>
 
             {/* Footer */}
-            <div className="flex justify-between items-center pt-5 mt-3 border-t border-black/10">
-              <div className="flex items-center gap-1.5 text-[12px] text-[#5f5e5a]">
+            <div className="flex justify-between items-center pt-5 mt-3 border-t border-surface-bordered">
+              <div className="flex items-center gap-1.5 text-[12px] text-content-secondary">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" />
                 </svg>
                 <span>Manager onayı ve provisioning ile tamamlanır</span>
               </div>
               <div className="flex gap-2">
-                <Link href="/" className="px-4 py-2 text-[13px] font-medium border border-black/20 rounded-lg bg-white text-[#1c1c1a] hover:bg-gray-50 transition-colors">
+                <Link href="/" className="px-4 py-2 text-[13px] font-medium border border-surface-bordered rounded-lg bg-surface text-content-primary hover:bg-surface-muted transition-colors">
                   İptal
                 </Link>
                 <button
                   onClick={handleSubmit}
                   disabled={!isSubmittable}
-                  className="px-4 py-2 text-[13px] font-medium rounded-lg bg-[#0c447c] text-white border border-[#0c447c] hover:bg-[#093660] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="px-4 py-2 text-[13px] font-medium rounded-lg bg-brand-primary text-white hover:bg-brand-primary-dark transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   Talebi gönder
                 </button>

@@ -13,11 +13,13 @@ const ACCOUNT_OPTIONS = ["İş Bankası", "Garanti", "Türk Telekom", "N/A"];
 const LEVEL_OPTIONS = ["Consultant", "Lead Developer", "Principal", "Expert"];
 const TOOL_OPTIONS = ["Chat", "Chat + Code", "Chat + Code + Cowork"];
 
+const SELECT_ARROW = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%233B4A6B' d='M2 4l4 4 4-4'/%3E%3C/svg%3E")`;
+
 function Field({ label, required, children }) {
   return (
     <div className="mb-5">
-      <label className="block text-[13px] font-medium text-[#1c1c1a] mb-1.5">
-        {label}{required && <span className="text-[#791f1f] ml-0.5">*</span>}
+      <label className="block text-[13px] font-medium text-content-primary mb-1.5">
+        {label}{required && <span className="text-state-danger ml-0.5">*</span>}
       </label>
       {children}
     </div>
@@ -29,9 +31,9 @@ function StyledSelect({ value, onChange, options }) {
     <select
       value={value}
       onChange={onChange}
-      className="w-full px-3 py-2 text-sm border border-black/20 rounded-lg bg-white text-[#1c1c1a] appearance-none focus:outline-none focus:ring-2 focus:ring-blue-400"
+      className="w-full px-3 py-2 text-sm border border-surface-bordered rounded-lg bg-surface text-content-primary appearance-none focus:outline-none focus:ring-2 focus:ring-brand-primary/40"
       style={{
-        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235f5e5a' d='M2 4l4 4 4-4'/%3E%3C/svg%3E")`,
+        backgroundImage: SELECT_ARROW,
         backgroundRepeat: "no-repeat",
         backgroundPosition: "right 12px center",
         paddingRight: "32px",
@@ -90,7 +92,7 @@ export default function Talep() {
     return (
       <Layout>
         <div className="flex items-center justify-center min-h-[50vh]">
-          <p className="text-[#5f5e5a] text-sm">Bu sayfayı sadece kullanıcı görebilir.</p>
+          <p className="text-content-secondary text-sm">Bu sayfayı sadece kullanıcı görebilir.</p>
         </div>
       </Layout>
     );
@@ -106,12 +108,15 @@ export default function Talep() {
     <Layout>
       <Head><title>Yeni Talep · Definex</title></Head>
       <div className="max-w-[820px] mx-auto">
-        <div className="bg-white rounded-xl border border-black/10 overflow-hidden shadow-sm">
-          <div className="px-6 py-5 border-b border-black/10">
-            <p className="font-medium text-[18px] text-[#1c1c1a] mb-0.5">Yeni talep oluştur</p>
-            <p className="text-[13px] text-[#5f5e5a]">
-              Lütfen aşağıdaki alanları doldurun. Yöneticinize otomatik olarak iletilecektir.
-            </p>
+        <div className="bg-surface rounded-card border border-surface-bordered shadow-card overflow-hidden">
+          <div className="px-6 py-5 border-b border-surface-bordered flex items-start gap-3">
+            <div className="w-1 h-5 rounded-full bg-brand-primary mt-0.5 shrink-0" />
+            <div>
+              <p className="font-semibold text-[17px] text-content-primary mb-0.5">Yeni talep oluştur</p>
+              <p className="text-[13px] text-content-secondary">
+                Lütfen aşağıdaki alanları doldurun. Yöneticinize otomatik olarak iletilecektir.
+              </p>
+            </div>
           </div>
 
           <div className="px-6 py-6">
@@ -125,13 +130,13 @@ export default function Talep() {
             </Field>
 
             {/* Profil Kartı */}
-            <div className="bg-[#f4f3ef] rounded-lg px-[18px] py-4 mb-6">
+            <div className="bg-surface-muted rounded-xl border border-surface-bordered px-[18px] py-4 mb-6">
               <div className="flex items-center gap-1.5 mb-3">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5f5e5a" strokeWidth="2">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7894" strokeWidth="2">
                   <rect x="3" y="11" width="18" height="11" rx="2" />
                   <path d="M7 11V7a5 5 0 0110 0v4" />
                 </svg>
-                <span className="text-[11px] font-medium text-[#5f5e5a] uppercase tracking-wider">
+                <span className="text-[11px] font-semibold text-content-tertiary uppercase tracking-wider">
                   Profil bilgileri · Azure AD
                 </span>
               </div>
@@ -145,8 +150,8 @@ export default function Talep() {
                   ["Talep tarihi", requestDate],
                 ].map(([label, value]) => (
                   <div key={label}>
-                    <p className="text-[10px] text-[#888780] uppercase tracking-wider mb-0.5">{label}</p>
-                    <p className="text-[14px] text-[#1c1c1a]">{value}</p>
+                    <p className="text-[10px] text-content-tertiary uppercase tracking-wider mb-0.5 font-semibold">{label}</p>
+                    <p className="text-[14px] text-content-primary">{value}</p>
                   </div>
                 ))}
               </div>
@@ -154,31 +159,31 @@ export default function Talep() {
 
             {/* Grup Atamaları */}
             <div className="mb-5">
-              <p className="text-[13px] font-medium text-[#1c1c1a] mb-3.5 pb-2 border-b border-black/10">
+              <p className="text-[13px] font-semibold text-content-primary mb-3.5 pb-2 border-b border-surface-bordered">
                 Grup atamaları
               </p>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[13px] font-medium text-[#1c1c1a] mb-1.5">
-                    Capability<span className="text-[#791f1f] ml-0.5">*</span>
+                  <label className="block text-[13px] font-medium text-content-primary mb-1.5">
+                    Capability<span className="text-state-danger ml-0.5">*</span>
                   </label>
                   <StyledSelect value={capability} onChange={(e) => setCapability(e.target.value)} options={CAPABILITY_OPTIONS} />
                 </div>
                 <div>
-                  <label className="block text-[13px] font-medium text-[#1c1c1a] mb-1.5">
-                    Account<span className="text-[#791f1f] ml-0.5">*</span>
+                  <label className="block text-[13px] font-medium text-content-primary mb-1.5">
+                    Account<span className="text-state-danger ml-0.5">*</span>
                   </label>
                   <StyledSelect value={account} onChange={(e) => setAccount(e.target.value)} options={ACCOUNT_OPTIONS} />
                 </div>
                 <div>
-                  <label className="block text-[13px] font-medium text-[#1c1c1a] mb-1.5">
-                    Level of Practise<span className="text-[#791f1f] ml-0.5">*</span>
+                  <label className="block text-[13px] font-medium text-content-primary mb-1.5">
+                    Level of Practise<span className="text-state-danger ml-0.5">*</span>
                   </label>
                   <StyledSelect value={level} onChange={(e) => setLevel(e.target.value)} options={LEVEL_OPTIONS} />
                 </div>
                 <div>
-                  <label className="block text-[13px] font-medium text-[#1c1c1a] mb-1.5">
-                    Tool yetkisi<span className="text-[#791f1f] ml-0.5">*</span>
+                  <label className="block text-[13px] font-medium text-content-primary mb-1.5">
+                    Tool yetkisi<span className="text-state-danger ml-0.5">*</span>
                   </label>
                   <StyledSelect value={tool} onChange={(e) => setTool(e.target.value)} options={TOOL_OPTIONS} />
                 </div>
@@ -187,26 +192,26 @@ export default function Talep() {
 
             {/* Gerekçe */}
             <div className="mb-5">
-              <label className="block text-[13px] font-medium text-[#1c1c1a] mb-1.5">
-                Kullanım gerekçesi<span className="text-[#791f1f] ml-0.5">*</span>
+              <label className="block text-[13px] font-medium text-content-primary mb-1.5">
+                Kullanım gerekçesi<span className="text-state-danger ml-0.5">*</span>
               </label>
-              <p className="text-[12px] text-[#5f5e5a] mb-1.5">
-                Claude'u hangi iş akışlarında, ne sıklıkta kullanmayı düşünüyorsunuz? (min. 100 karakter)
+              <p className="text-[12px] text-content-secondary mb-1.5">
+                Claude&apos;u hangi iş akışlarında, ne sıklıkta kullanmayı düşünüyorsunuz? (min. 100 karakter)
               </p>
               <textarea
                 value={gerekce}
                 onChange={(e) => setGerekce(e.target.value)}
                 placeholder="Örn: İş Bankası PYS projesinde müşteri segmentasyon raporlarının taslaklarını oluşturmak, mevcut Excel modellerini açıklayan dokümantasyon yazmak ve sunum görsellerini revize etmek için günlük olarak kullanmayı planlıyorum..."
-                className="w-full px-3 py-2 text-sm border border-black/20 rounded-lg bg-white text-[#1c1c1a] resize-y min-h-[90px] focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full px-3 py-2 text-sm border border-surface-bordered rounded-lg bg-surface text-content-primary resize-y min-h-[90px] focus:outline-none focus:ring-2 focus:ring-brand-primary/40"
               />
-              <p className={`text-[11px] mt-1 text-right ${gerekce.length >= 100 ? "text-[#27500a]" : "text-[#888780]"}`}>
+              <p className={`text-[11px] mt-1 text-right ${gerekce.length >= 100 ? "text-state-success" : "text-content-tertiary"}`}>
                 {gerekce.length} / 100 karakter
               </p>
             </div>
 
             {/* Onaylar */}
             <div className="mb-5">
-              <p className="text-[13px] font-medium text-[#1c1c1a] mb-3.5 pb-2 border-b border-black/10">
+              <p className="text-[13px] font-semibold text-content-primary mb-3.5 pb-2 border-b border-surface-bordered">
                 Onaylar
               </p>
               {[
@@ -214,7 +219,7 @@ export default function Talep() {
                   id: "aup", checked: aup, onChange: setAup,
                   content: (
                     <><span className="font-medium">AUP onayı</span> — Definex Claude Kullanım Politikası&apos;nı okudum ve kabul ediyorum.{" "}
-                      <a href="#" className="text-[#0c447c] hover:underline">Politikayı görüntüle</a></>
+                      <a href="#" className="text-brand-primary hover:underline">Politikayı görüntüle</a></>
                   ),
                 },
                 {
@@ -235,16 +240,16 @@ export default function Talep() {
                     type="checkbox"
                     checked={checked}
                     onChange={(e) => onChange(e.target.checked)}
-                    className="mt-1 cursor-pointer"
+                    className="mt-1 cursor-pointer accent-brand-primary"
                   />
-                  <span className="text-[13px] leading-relaxed text-[#1c1c1a]">{content}</span>
+                  <span className="text-[13px] leading-relaxed text-content-primary">{content}</span>
                 </label>
               ))}
             </div>
 
             {/* Footer */}
-            <div className="flex justify-between items-center pt-5 mt-3 border-t border-black/10">
-              <div className="flex items-center gap-1.5 text-[12px] text-[#5f5e5a]">
+            <div className="flex justify-between items-center pt-5 mt-3 border-t border-surface-bordered">
+              <div className="flex items-center gap-1.5 text-[12px] text-content-secondary">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="12" cy="12" r="10" />
                   <line x1="12" y1="16" x2="12" y2="12" />
@@ -255,14 +260,14 @@ export default function Talep() {
               <div className="flex gap-2">
                 <Link
                   href="/"
-                  className="px-4 py-2 text-[13px] font-medium border border-black/20 rounded-lg bg-white text-[#1c1c1a] hover:bg-gray-50 transition-colors"
+                  className="px-4 py-2 text-[13px] font-medium border border-surface-bordered rounded-lg bg-surface text-content-primary hover:bg-surface-muted transition-colors"
                 >
                   İptal
                 </Link>
                 <button
                   onClick={handleSubmit}
                   disabled={!isSubmittable}
-                  className="px-4 py-2 text-[13px] font-medium rounded-lg bg-[#0c447c] text-white border border-[#0c447c] hover:bg-[#093660] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="px-4 py-2 text-[13px] font-medium rounded-lg bg-brand-primary text-white hover:bg-brand-primary-dark transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   Talebi gönder
                 </button>

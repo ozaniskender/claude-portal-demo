@@ -28,7 +28,7 @@ export default function AdminQueue() {
     return (
       <Layout>
         <div className="flex items-center justify-center min-h-[50vh]">
-          <p className="text-[#5f5e5a] text-sm">Bu sayfayı sadece License Admin görebilir.</p>
+          <p className="text-content-secondary text-sm">Bu sayfayı sadece License Admin görebilir.</p>
         </div>
       </Layout>
     );
@@ -38,42 +38,45 @@ export default function AdminQueue() {
     <Layout>
       <Head><title>Provisioning Queue · Definex</title></Head>
       <div className="max-w-[820px] mx-auto">
-        <div className="bg-white rounded-xl border border-black/10 overflow-hidden shadow-sm">
-          <div className="px-6 py-5 border-b border-black/10 flex items-center justify-between">
-            <div>
-              <p className="font-medium text-[18px] text-[#1c1c1a] mb-0.5">Provisioning Kuyruğu</p>
-              <p className="text-[13px] text-[#5f5e5a]">Manager onayı tamamlanmış, provisioning bekleyen talepler.</p>
+        <div className="bg-surface rounded-card border border-surface-bordered shadow-card overflow-hidden">
+          <div className="px-6 py-5 border-b border-surface-bordered flex items-center justify-between">
+            <div className="flex items-start gap-3">
+              <div className="w-1 h-5 rounded-full bg-brand-primary mt-0.5 shrink-0" />
+              <div>
+                <p className="font-semibold text-[17px] text-content-primary mb-0.5">Provisioning Kuyruğu</p>
+                <p className="text-[13px] text-content-secondary">Manager onayı tamamlanmış, provisioning bekleyen talepler.</p>
+              </div>
             </div>
             {requests.length > 0 && (
-              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#eaf3de] text-[#27500a] text-[12px] font-semibold">
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#EAF3DE] text-state-success border border-[#C6E09A] text-[12px] font-semibold">
                 {requests.length}
               </span>
             )}
           </div>
 
-          <div className="divide-y divide-black/10">
+          <div className="divide-y divide-surface-bordered">
             {requests.length === 0 ? (
               <div className="px-6 py-16 text-center">
-                <svg className="w-8 h-8 text-[#c8c7c0] mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <svg className="w-8 h-8 text-surface-bordered mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <p className="text-[#5f5e5a] text-[13px]">Bekleyen provisioning talebi yok.</p>
+                <p className="text-content-secondary text-[13px]">Bekleyen provisioning talebi yok.</p>
               </div>
             ) : (
               requests.map((req) => (
-                <div key={req.id} className="px-6 py-4 flex items-center justify-between hover:bg-[#faf9f7] transition-colors">
+                <div key={req.id} className="px-6 py-4 flex items-center justify-between hover:bg-surface-muted transition-colors">
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-mono text-[12px] text-[#27500a] font-medium">{req.id}</span>
-                      <span className="inline-block px-2 py-0.5 text-[11px] font-medium rounded-lg bg-[#eaf3de] text-[#27500a]">
+                      <span className="font-mono text-[12px] text-state-success font-medium">{req.id}</span>
+                      <span className="inline-block px-2 py-0.5 text-[11px] font-medium rounded-lg bg-brand-light-blue text-[#09206E] border border-brand-primary/30">
                         Provisioning bekliyor
                       </span>
-                      <span className="inline-block px-2 py-0.5 text-[11px] font-medium rounded-lg bg-[#f4f3ef] text-[#5f5e5a]">
+                      <span className="inline-block px-2 py-0.5 text-[11px] font-medium rounded-lg bg-surface-subtle text-content-secondary border border-surface-bordered">
                         {TYPE_LABELS[req.type] || req.type}
                       </span>
                     </div>
-                    <p className="text-[14px] font-medium text-[#1c1c1a] mb-0.5">{req.requester}</p>
-                    <p className="text-[12px] text-[#5f5e5a]">
+                    <p className="text-[14px] font-medium text-content-primary mb-0.5">{req.requester}</p>
+                    <p className="text-[12px] text-content-secondary">
                       Manager onayı: {req.managerApproval?.by || "—"}
                       {req.managerApproval?.at && (
                         <> · {new Date(req.managerApproval.at).toLocaleDateString("tr-TR", { day: "numeric", month: "long" })}</>
@@ -82,7 +85,7 @@ export default function AdminQueue() {
                   </div>
                   <Link
                     href={`/admin-provision/${req.id}`}
-                    className="flex items-center gap-1.5 px-4 py-2 text-[13px] font-medium border border-[#639922]/50 rounded-lg bg-[#eaf3de] text-[#27500a] hover:bg-[#dff0cc] transition-colors"
+                    className="flex items-center gap-1.5 px-4 py-2 text-[13px] font-medium border border-[#C6E09A] rounded-lg bg-[#EAF3DE] text-state-success hover:bg-[#D7EDBB] transition-colors"
                   >
                     Provision
                     <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

@@ -3,9 +3,9 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 const PERSONAS = [
-  { key: "Burçak", label: "Burçak (Kullanıcı)" },
-  { key: "Zeynep", label: "Zeynep (Manager)" },
-  { key: "Hakan", label: "Hakan (License Admin)" },
+  { key: "Burçak", label: "Burçak Göksel", role: "Kullanıcı", color: "bg-[#DEE8FD] text-[#09206E]" },
+  { key: "Zeynep", label: "Zeynep Şen",    role: "Manager",   color: "bg-[#F3B693] text-[#6B2910]" },
+  { key: "Hakan",  label: "Hakan Kormanlı", role: "License Admin", color: "bg-[#C6E09A] text-[#27500a]" },
 ];
 
 const BASE_NAV = [
@@ -18,15 +18,20 @@ const HAKAN_NAV = [
   { href: "/dashboard", label: "Dashboard" },
 ];
 
-const FOOTER_LINKS = [
-  { href: "/", label: "Ana Sayfa" },
-  { href: "/taleplerim", label: "Taleplerim" },
-  { href: "/talep", label: "Burçak inbox" },
-  { href: "/manager-inbox", label: "Zeynep inbox" },
-  { href: "/admin-queue", label: "Hakan queue" },
-  { href: "/dashboard", label: "Hakan dashboard" },
-  { href: "/demo-reset", label: "Demo reset" },
-];
+function NavLink({ href, label, isActive }) {
+  return (
+    <Link
+      href={href}
+      className={`px-3 py-1.5 text-sm rounded-md transition-colors font-medium ${
+        isActive
+          ? "bg-white/20 text-white"
+          : "text-white/80 hover:text-white hover:bg-white/10"
+      }`}
+    >
+      {label}
+    </Link>
+  );
+}
 
 export default function Layout({ children }) {
   const [persona, setPersona] = useState("Burçak");
@@ -50,46 +55,55 @@ export default function Layout({ children }) {
   }
 
   const navLinks = persona === "Hakan" ? HAKAN_NAV : BASE_NAV;
+  const currentPersona = PERSONAS.find((p) => p.key === persona) || PERSONAS[0];
 
   return (
-    <div className="min-h-screen bg-[#faf9f7] flex flex-col">
-      <header className="bg-[#1e3a5f] text-white shadow-md">
+    <div className="min-h-screen bg-surface-muted flex flex-col">
+      <header className="bg-brand-navy text-white shadow-elevated">
         <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between gap-6">
-          <Link href="/" className="font-semibold text-base tracking-tight hover:opacity-80 transition-opacity shrink-0">
-            Claude Lisans Yönetimi&nbsp;·&nbsp;
-            <span className="text-blue-300">Definex Internal Portal</span>
+          {/* Logo + Brand */}
+          <Link href="/" className="flex items-center gap-2.5 hover:opacity-85 transition-opacity shrink-0">
+            <img
+              src="/definex-logo.svg"
+              alt="Definex"
+              width={28}
+              height={28}
+              className="brightness-0 invert"
+            />
+            <div className="flex items-center gap-1.5">
+              <span className="font-semibold text-[15px] tracking-tight text-white">Definex</span>
+              <span className="text-white/30 text-sm">·</span>
+              <span className="text-[13px] text-[#8FAEED] font-medium">Claude Lisans Portalı</span>
+            </div>
           </Link>
 
-          <nav className="flex items-center gap-1">
-            {navLinks.map((link) => {
-              const isActive = router.pathname === link.href;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-                    isActive
-                      ? "bg-white/15 text-white font-semibold underline underline-offset-2"
-                      : "text-blue-200 hover:text-white hover:bg-white/10"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
+          {/* Nav */}
+          <nav className="flex items-center gap-0.5">
+            {navLinks.map((link) => (
+              <NavLink
+                key={link.href}
+                href={link.href}
+                label={link.label}
+                isActive={router.pathname === link.href}
+              />
+            ))}
           </nav>
 
+          {/* Persona switcher */}
           {mounted && (
-            <div className="flex items-center gap-2 shrink-0">
-              <span className="text-xs text-blue-200 hidden sm:inline">Persona:</span>
+            <div className="flex items-center gap-2.5 shrink-0">
+              <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-[11px] font-bold ${currentPersona.color}`}>
+                {currentPersona.label.charAt(0)}
+              </span>
               <select
                 value={persona}
                 onChange={handlePersonaChange}
-                className="text-sm bg-[#16304f] border border-blue-400 text-white rounded px-3 py-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="text-[13px] bg-white/10 border border-white/20 text-white rounded-lg px-2.5 py-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/30 appearance-none pr-7"
+                style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ffffff80' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 8px center' }}
               >
                 {PERSONAS.map((p) => (
-                  <option key={p.key} value={p.key}>
-                    {p.label}
+                  <option key={p.key} value={p.key} className="bg-[#0F1737] text-white">
+                    {p.label} ({p.role})
                   </option>
                 ))}
               </select>
@@ -99,20 +113,6 @@ export default function Layout({ children }) {
       </header>
 
       <main className="max-w-7xl mx-auto px-6 py-8 flex-1 w-full">{children}</main>
-
-      <footer className="border-t border-black/10 mt-8">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex flex-wrap items-center gap-x-5 gap-y-1">
-          {FOOTER_LINKS.map((link, i) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-[12px] text-[#888780] underline underline-offset-2 hover:text-[#5f5e5a] transition-colors"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
-      </footer>
     </div>
   );
 }

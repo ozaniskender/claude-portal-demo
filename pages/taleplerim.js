@@ -13,46 +13,46 @@ const TYPE_LABELS = {
 const STATE_BADGE = {
   pending_manager_approval: {
     label: "Yönetici onayı bekleniyor",
-    classes: "bg-[#faeeda] text-[#854f0b]",
+    classes: "bg-[#faeeda] text-[#854f0b] border border-[#d4a87a]",
   },
   pending_provisioning: {
     label: "Provisioning bekleniyor",
-    classes: "bg-[#e6f1fb] text-[#0c447c]",
+    classes: "bg-brand-light-blue text-[#09206E] border border-brand-primary/30",
   },
   completed: {
     label: "Tamamlandı",
-    classes: "bg-[#eaf3de] text-[#27500a]",
+    classes: "bg-[#eaf3de] text-[#27500a] border border-[#8bbf5c]",
   },
   rejected_by_manager: {
     label: "Reddedildi",
-    classes: "bg-[#fcebeb] text-[#791f1f]",
+    classes: "bg-[#fcebeb] text-[#791f1f] border border-[#f0aeae]",
   },
 };
 
 function RequestCard({ req, showRequester = true, href }) {
-  const badge = STATE_BADGE[req.state] || { label: req.state, classes: "bg-[#f4f3ef] text-[#5f5e5a]" };
+  const badge = STATE_BADGE[req.state] || { label: req.state, classes: "bg-surface-subtle text-content-secondary border border-surface-bordered" };
 
   return (
     <Link href={href} className="group block">
-      <div className="px-6 py-4 flex items-center justify-between hover:bg-[#faf9f7] transition-all group-hover:shadow-[inset_0_0_0_1px_rgba(0,0,0,0.06)]">
+      <div className="px-6 py-4 flex items-center justify-between hover:bg-surface-muted transition-all group-hover:shadow-[inset_0_0_0_1px_rgba(34,73,214,0.08)]">
         <div className="min-w-0">
           <div className="flex items-center gap-2 mb-1 flex-wrap">
-            <span className="font-mono text-[12px] text-[#5f5e5a] font-medium">{req.id}</span>
-            <span className="inline-block px-2 py-0.5 text-[11px] font-medium rounded-lg bg-[#f4f3ef] text-[#5f5e5a]">
+            <span className="font-mono text-[12px] text-content-tertiary font-medium">{req.id}</span>
+            <span className="inline-block px-2 py-0.5 text-[11px] font-medium rounded-lg bg-surface-subtle text-content-secondary border border-surface-bordered">
               {TYPE_LABELS[req.type] || req.type}
             </span>
           </div>
           {showRequester && (
-            <p className="text-[14px] font-medium text-[#1c1c1a] mb-0.5 truncate">{req.requester}</p>
+            <p className="text-[14px] font-medium text-content-primary mb-0.5 truncate">{req.requester}</p>
           )}
-          <p className="text-[12px] text-[#888780]">{relativeTime(req.createdAt)}</p>
+          <p className="text-[12px] text-content-tertiary">{relativeTime(req.createdAt)}</p>
         </div>
         <div className="flex items-center gap-3 shrink-0 ml-4">
           <span className={`inline-block px-2.5 py-1 text-[11px] font-medium rounded-lg ${badge.classes}`}>
             {badge.label}
           </span>
           <svg
-            className="w-4 h-4 text-[#c8c7c0] group-hover:text-[#5f5e5a] transition-colors"
+            className="w-4 h-4 text-surface-bordered group-hover:text-brand-primary transition-colors"
             fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
@@ -66,12 +66,12 @@ function RequestCard({ req, showRequester = true, href }) {
 function EmptyState({ message, linkHref, linkLabel }) {
   return (
     <div className="px-6 py-16 text-center">
-      <svg className="w-8 h-8 text-[#c8c7c0] mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <svg className="w-8 h-8 text-surface-bordered mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
       </svg>
-      <p className="text-[#5f5e5a] text-[13px] mb-3">{message}</p>
+      <p className="text-content-secondary text-[13px] mb-3">{message}</p>
       {linkHref && (
-        <Link href={linkHref} className="text-[13px] font-medium text-[#0c447c] hover:underline">
+        <Link href={linkHref} className="text-[13px] font-medium text-brand-primary hover:underline">
           {linkLabel}
         </Link>
       )}
@@ -81,27 +81,39 @@ function EmptyState({ message, linkHref, linkLabel }) {
 
 function TabBar({ tabs, active, onChange }) {
   return (
-    <div className="flex border-b border-black/10">
+    <div className="flex border-b border-surface-bordered">
       {tabs.map((tab) => (
         <button
           key={tab.key}
           onClick={() => onChange(tab.key)}
           className={`px-6 py-3.5 text-[13px] font-medium border-b-2 transition-colors ${
             active === tab.key
-              ? "border-[#1e3a5f] text-[#1e3a5f]"
-              : "border-transparent text-[#5f5e5a] hover:text-[#1c1c1a]"
+              ? "border-brand-primary text-brand-primary"
+              : "border-transparent text-content-secondary hover:text-content-primary"
           }`}
         >
           {tab.label}
           {tab.count > 0 && (
             <span className={`ml-2 inline-flex items-center justify-center w-5 h-5 rounded-full text-[11px] font-semibold ${
-              active === tab.key ? "bg-[#1e3a5f] text-white" : "bg-[#f4f3ef] text-[#5f5e5a]"
+              active === tab.key ? "bg-brand-primary text-white" : "bg-surface-subtle text-content-secondary"
             }`}>
               {tab.count}
             </span>
           )}
         </button>
       ))}
+    </div>
+  );
+}
+
+function SectionHeader({ title, desc }) {
+  return (
+    <div className="px-6 py-5 border-b border-surface-bordered flex items-start gap-3">
+      <div className="w-1 h-5 rounded-full bg-brand-primary mt-0.5 shrink-0" />
+      <div>
+        <p className="font-semibold text-[17px] text-content-primary mb-0.5">{title}</p>
+        <p className="text-[13px] text-content-secondary">{desc}</p>
+      </div>
     </div>
   );
 }
@@ -113,12 +125,9 @@ function BurcakView({ requests }) {
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   return (
-    <div className="bg-white rounded-xl border border-black/10 overflow-hidden shadow-sm">
-      <div className="px-6 py-5 border-b border-black/10">
-        <p className="font-medium text-[18px] text-[#1c1c1a] mb-0.5">Taleplerim</p>
-        <p className="text-[13px] text-[#5f5e5a]">Oluşturduğunuz tüm talepler.</p>
-      </div>
-      <div className="divide-y divide-black/10">
+    <div className="bg-surface rounded-card border border-surface-bordered shadow-card overflow-hidden">
+      <SectionHeader title="Taleplerim" desc="Oluşturduğunuz tüm talepler." />
+      <div className="divide-y divide-surface-bordered">
         {mine.length === 0 ? (
           <EmptyState
             message="Henüz hiç talep oluşturmadınız."
@@ -158,13 +167,10 @@ function ZeynepView({ requests }) {
   ];
 
   return (
-    <div className="bg-white rounded-xl border border-black/10 overflow-hidden shadow-sm">
-      <div className="px-6 py-5 border-b border-black/10">
-        <p className="font-medium text-[18px] text-[#1c1c1a] mb-0.5">Taleplerim</p>
-        <p className="text-[13px] text-[#5f5e5a]">Onayınızı bekleyen ve geçmiş onay işlemleriniz.</p>
-      </div>
+    <div className="bg-surface rounded-card border border-surface-bordered shadow-card overflow-hidden">
+      <SectionHeader title="Taleplerim" desc="Onayınızı bekleyen ve geçmiş onay işlemleriniz." />
       <TabBar tabs={tabs} active={activeTab} onChange={setActiveTab} />
-      <div className="divide-y divide-black/10">
+      <div className="divide-y divide-surface-bordered">
         {activeTab === "pending" ? (
           pending.length === 0 ? (
             <EmptyState message="Henüz bekleyen talep yok ✓" />
@@ -215,13 +221,10 @@ function HakanView({ requests }) {
   ];
 
   return (
-    <div className="bg-white rounded-xl border border-black/10 overflow-hidden shadow-sm">
-      <div className="px-6 py-5 border-b border-black/10">
-        <p className="font-medium text-[18px] text-[#1c1c1a] mb-0.5">Taleplerim</p>
-        <p className="text-[13px] text-[#5f5e5a]">Provisioning kuyruğu ve tamamlanan işlemler.</p>
-      </div>
+    <div className="bg-surface rounded-card border border-surface-bordered shadow-card overflow-hidden">
+      <SectionHeader title="Taleplerim" desc="Provisioning kuyruğu ve tamamlanan işlemler." />
       <TabBar tabs={tabs} active={activeTab} onChange={setActiveTab} />
-      <div className="divide-y divide-black/10">
+      <div className="divide-y divide-surface-bordered">
         {activeTab === "queue" ? (
           queue.length === 0 ? (
             <EmptyState message="Provisioning kuyruğu boş ✓" />

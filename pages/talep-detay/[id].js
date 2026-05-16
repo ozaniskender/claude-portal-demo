@@ -11,18 +11,18 @@ const TYPE_LABELS = {
 };
 
 const STATE_BADGE = {
-  pending_manager_approval: { label: "Yönetici onayı bekleniyor", classes: "bg-[#faeeda] text-[#854f0b]" },
-  pending_provisioning: { label: "Provisioning bekleniyor", classes: "bg-[#e6f1fb] text-[#0c447c]" },
-  completed: { label: "Tamamlandı", classes: "bg-[#eaf3de] text-[#27500a]" },
-  rejected_by_manager: { label: "Reddedildi", classes: "bg-[#fcebeb] text-[#791f1f]" },
+  pending_manager_approval: { label: "Yönetici onayı bekleniyor", classes: "bg-[#faeeda] text-[#854f0b] border border-[#d4a87a]" },
+  pending_provisioning:     { label: "Provisioning bekleniyor",   classes: "bg-brand-light-blue text-[#09206E] border border-brand-primary/30" },
+  completed:                { label: "Tamamlandı",                classes: "bg-[#eaf3de] text-[#27500a] border border-[#8bbf5c]" },
+  rejected_by_manager:      { label: "Reddedildi",               classes: "bg-[#fcebeb] text-[#791f1f] border border-[#f0aeae]" },
 };
 
 function InfoRow({ label, value }) {
   if (!value) return null;
   return (
     <div>
-      <p className="text-[10px] text-[#888780] uppercase tracking-wider mb-0.5">{label}</p>
-      <p className="text-[14px] text-[#1c1c1a]">{value}</p>
+      <p className="text-[10px] text-content-tertiary uppercase tracking-wider mb-0.5 font-semibold">{label}</p>
+      <p className="text-[14px] text-content-primary">{value}</p>
     </div>
   );
 }
@@ -83,30 +83,37 @@ function formatDate(iso) {
   });
 }
 
-function TimelineStep({ done, active, last, children }) {
+function TimelineStep({ done, active, rejected, last, children }) {
+  const circleClass = done
+    ? "bg-state-success border-2 border-state-success"
+    : rejected
+    ? "bg-state-danger border-2 border-state-danger"
+    : active
+    ? "bg-brand-primary border-2 border-brand-primary"
+    : "bg-surface-muted border-2 border-surface-bordered";
+
+  const lineClass = done ? "bg-state-success/30" : "bg-surface-bordered";
+
   return (
     <div className="flex gap-4">
       <div className="flex flex-col items-center">
-        <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-          done
-            ? "bg-[#eaf3de] border-2 border-[#639922]"
-            : active
-            ? "bg-[#e6f1fb] border-2 border-[#185fa5]"
-            : "bg-[#f4f3ef] border-2 border-[#c8c7c0]"
-        }`}>
-          {done ? (
-            <svg className="w-4 h-4 text-[#27500a]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+        <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${circleClass}`}>
+          {(done || rejected) ? (
+            <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              {rejected
+                ? <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                : <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              }
             </svg>
           ) : (
-            <div className={`w-2.5 h-2.5 rounded-full ${active ? "bg-[#185fa5]" : "bg-[#c8c7c0]"}`} />
+            <div className={`w-2.5 h-2.5 rounded-full ${active ? "bg-white" : "bg-surface-subtle"}`} />
           )}
         </div>
         {!last && (
-          <div className={`w-0.5 flex-1 mt-1 ${done ? "bg-[#639922]/40" : "bg-[#c8c7c0]/50"}`} style={{ minHeight: "24px" }} />
+          <div className={`w-0.5 flex-1 mt-1 ${lineClass}`} style={{ minHeight: "24px" }} />
         )}
       </div>
-      <div className="pb-6 min-w-0">{children}</div>
+      <div className="pb-6 min-w-0 flex-1">{children}</div>
     </div>
   );
 }
@@ -129,13 +136,13 @@ export default function TalepDetay() {
     return (
       <Layout>
         <div className="flex items-center justify-center min-h-[50vh]">
-          <p className="text-[#5f5e5a] text-sm">Talep bulunamadı.</p>
+          <p className="text-content-secondary text-sm">Talep bulunamadı.</p>
         </div>
       </Layout>
     );
   }
 
-  const badge = STATE_BADGE[req.state] || { label: req.state, classes: "bg-[#f4f3ef] text-[#5f5e5a]" };
+  const badge = STATE_BADGE[req.state] || { label: req.state, classes: "bg-surface-subtle text-content-secondary border border-surface-bordered" };
   const isCompleted = req.state === "completed";
   const isRejected = req.state === "rejected_by_manager";
   const hasManagerAction = !!req.managerApproval;
@@ -147,19 +154,19 @@ export default function TalepDetay() {
       <div className="max-w-[820px] mx-auto space-y-4">
 
         {/* Summary Card */}
-        <div className="bg-white rounded-xl border border-black/10 overflow-hidden shadow-sm">
+        <div className="bg-surface rounded-card border border-surface-bordered shadow-card">
           <div className="px-6 py-5 flex items-start justify-between gap-4">
             <div>
               <div className="flex items-center gap-2 mb-2 flex-wrap">
-                <span className="font-mono text-[13px] text-[#5f5e5a] font-medium">{req.id}</span>
+                <span className="font-mono text-[12px] text-content-tertiary font-medium">{req.id}</span>
                 <span className={`inline-block px-2.5 py-1 text-[11px] font-medium rounded-lg ${badge.classes}`}>
                   {badge.label}
                 </span>
               </div>
-              <p className="text-[16px] font-semibold text-[#1c1c1a] mb-0.5">
+              <p className="text-[17px] font-semibold text-content-primary mb-0.5">
                 {TYPE_LABELS[req.type] || req.type}
               </p>
-              <p className="text-[13px] text-[#5f5e5a]">
+              <p className="text-[13px] text-content-secondary">
                 {req.requester} · {formatDate(req.createdAt)}
               </p>
             </div>
@@ -167,9 +174,9 @@ export default function TalepDetay() {
         </div>
 
         {/* Request Content Card */}
-        <div className="bg-white rounded-xl border border-black/10 overflow-hidden shadow-sm">
-          <div className="px-6 py-4 border-b border-black/10">
-            <p className="text-[13px] font-semibold text-[#1c1c1a] uppercase tracking-wider">Talep İçeriği</p>
+        <div className="bg-surface rounded-card border border-surface-bordered shadow-card">
+          <div className="px-6 py-4 border-b border-surface-bordered">
+            <p className="text-[12px] font-semibold text-content-primary uppercase tracking-wider">Talep İçeriği</p>
           </div>
           <div className="px-6 py-5">
             <RequestContent req={req} />
@@ -177,87 +184,101 @@ export default function TalepDetay() {
         </div>
 
         {/* Approval Timeline Card */}
-        <div className="bg-white rounded-xl border border-black/10 overflow-hidden shadow-sm">
-          <div className="px-6 py-4 border-b border-black/10">
-            <p className="text-[13px] font-semibold text-[#1c1c1a] uppercase tracking-wider">Onay Zinciri</p>
+        <div className="bg-surface rounded-card border border-surface-bordered shadow-card">
+          <div className="px-6 py-4 border-b border-surface-bordered flex items-center gap-2">
+            <div className="w-1 h-4 rounded-full bg-brand-primary" />
+            <p className="text-[12px] font-semibold text-content-primary uppercase tracking-wider">Onay Zinciri</p>
           </div>
           <div className="px-6 py-6">
 
             {/* Step 1: Created */}
-            <TimelineStep done={true} active={false} last={!hasManagerAction && !hasProvisioning}>
-              <p className="text-[13px] font-medium text-[#1c1c1a] mb-0.5">Talep oluşturuldu</p>
-              <p className="text-[12px] text-[#5f5e5a]">
-                {formatDate(req.createdAt)} · {req.requester} tarafından
-              </p>
+            <TimelineStep done={true} active={false} rejected={false} last={!hasManagerAction && !hasProvisioning}>
+              <div className="bg-surface-muted rounded-xl border border-surface-bordered px-4 py-3">
+                <p className="text-[13px] font-semibold text-content-primary mb-0.5">Talep oluşturuldu</p>
+                <p className="text-[12px] text-content-secondary">
+                  {formatDate(req.createdAt)} · {req.requester}
+                </p>
+              </div>
             </TimelineStep>
 
             {/* Step 2: Manager */}
             <TimelineStep
-              done={hasManagerAction}
+              done={hasManagerAction && !isRejected}
               active={!hasManagerAction && req.state === "pending_manager_approval"}
+              rejected={isRejected}
               last={!hasProvisioning}
             >
-              {hasManagerAction ? (
-                <>
-                  <p className="text-[13px] font-medium text-[#1c1c1a] mb-0.5">
-                    {isRejected ? "Yönetici tarafından reddedildi" : "Yönetici tarafından onaylandı"}
-                  </p>
-                  <p className="text-[12px] text-[#5f5e5a] mb-2">
-                    {formatDate(req.managerApproval.at)} · {req.managerApproval.by}
-                  </p>
-                  {req.managerApproval.note && (
-                    <div className="bg-[#f4f3ef] rounded-lg px-3.5 py-2.5">
-                      <p className="text-[12px] text-[#5f5e5a] italic">{req.managerApproval.note}</p>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <>
-                  <p className="text-[13px] font-medium text-[#1c1c1a] mb-0.5">Yönetici onayı bekleniyor</p>
-                  <p className="text-[12px] text-[#5f5e5a]">{req.manager}</p>
-                </>
-              )}
-            </TimelineStep>
-
-            {/* Step 3: Provisioning */}
-            {(hasProvisioning || req.state === "pending_provisioning") && (
-              <TimelineStep done={hasProvisioning} active={req.state === "pending_provisioning"} last={true}>
-                {hasProvisioning ? (
+              <div className={`rounded-xl border px-4 py-3 ${
+                hasManagerAction
+                  ? isRejected
+                    ? "bg-[#FCEBEB] border-[#F0AEAE]"
+                    : "bg-[#EAF3DE] border-[#C6E09A]"
+                  : "bg-surface-muted border-surface-bordered"
+              }`}>
+                {hasManagerAction ? (
                   <>
-                    <p className="text-[13px] font-medium text-[#1c1c1a] mb-0.5">Provisioning tamamlandı</p>
-                    <p className="text-[12px] text-[#5f5e5a] mb-2">
-                      {formatDate(req.provisioning.at)} · {req.provisioning.by}
+                    <p className="text-[13px] font-semibold text-content-primary mb-0.5">
+                      {isRejected ? "Yönetici tarafından reddedildi" : "Yönetici tarafından onaylandı"}
                     </p>
-                    {req.provisioning.internalNote && (
-                      <div className="bg-[#f4f3ef] rounded-lg px-3.5 py-2.5 mb-2">
-                        <p className="text-[12px] text-[#5f5e5a] italic">{req.provisioning.internalNote}</p>
-                      </div>
-                    )}
-                    {req.provisioning.apiCalls?.length > 0 && (
-                      <div className="bg-[#1c1c1a] rounded-lg px-3.5 py-2.5 font-mono text-[11px] leading-relaxed flex flex-col gap-0.5">
-                        {req.provisioning.apiCalls.map((call, i) => {
-                          if (typeof call === "string") {
-                            return <span key={i} className="text-[#b5d4f4]">{call}</span>;
-                          }
-                          return (
-                            <div key={i} className="flex gap-2 flex-wrap">
-                              <span className={call.method === "DELETE" ? "text-[#f09595] font-medium" : "text-[#97c459] font-medium"}>
-                                {call.method}
-                              </span>
-                              <span className="text-[#b5d4f4]">{call.path}</span>
-                              {call.comment && <span className="text-[#888780]">{"# "}{call.comment}</span>}
-                            </div>
-                          );
-                        })}
-                      </div>
+                    <p className="text-[12px] text-content-secondary mb-2">
+                      {formatDate(req.managerApproval.at)} · {req.managerApproval.by}
+                    </p>
+                    {req.managerApproval.note && (
+                      <p className="text-[12px] text-content-secondary italic">{req.managerApproval.note}</p>
                     )}
                   </>
                 ) : (
                   <>
-                    <p className="text-[13px] font-medium text-[#1c1c1a] mb-0.5">Provisioning bekleniyor</p>
-                    <p className="text-[12px] text-[#5f5e5a]">Hakan Kormanlı</p>
+                    <p className="text-[13px] font-semibold text-content-primary mb-0.5">Yönetici onayı bekleniyor</p>
+                    <p className="text-[12px] text-content-secondary">{req.manager}</p>
                   </>
                 )}
+              </div>
+            </TimelineStep>
+
+            {/* Step 3: Provisioning */}
+            {(hasProvisioning || req.state === "pending_provisioning") && (
+              <TimelineStep done={hasProvisioning} active={req.state === "pending_provisioning"} rejected={false} last={true}>
+                <div className={`rounded-xl border px-4 py-3 ${
+                  hasProvisioning
+                    ? "bg-[#EAF3DE] border-[#C6E09A]"
+                    : "bg-surface-muted border-surface-bordered"
+                }`}>
+                  {hasProvisioning ? (
+                    <>
+                      <p className="text-[13px] font-semibold text-content-primary mb-0.5">Provisioning tamamlandı</p>
+                      <p className="text-[12px] text-content-secondary mb-2">
+                        {formatDate(req.provisioning.at)} · {req.provisioning.by}
+                      </p>
+                      {req.provisioning.internalNote && (
+                        <p className="text-[12px] text-content-secondary italic mb-2">{req.provisioning.internalNote}</p>
+                      )}
+                      {req.provisioning.apiCalls?.length > 0 && (
+                        <div className="bg-brand-navy rounded-lg px-3.5 py-2.5 font-mono text-[11px] leading-relaxed flex flex-col gap-0.5 mt-2">
+                          {req.provisioning.apiCalls.map((call, i) => {
+                            if (typeof call === "string") {
+                              return <span key={i} className="text-[#8FAEED]">{call}</span>;
+                            }
+                            return (
+                              <div key={i} className="flex gap-2 flex-wrap">
+                                <span className={call.method === "DELETE" ? "text-[#F0AEAE] font-medium" : "text-[#97c459] font-medium"}>
+                                  {call.method}
+                                </span>
+                                <span className="text-[#8FAEED]">{call.path}</span>
+                                {call.comment && <span className="text-[#6B7894]">{"# "}{call.comment}</span>}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-[13px] font-semibold text-content-primary mb-0.5">Provisioning bekleniyor</p>
+                      <p className="text-[12px] text-content-secondary">Hakan Kormanlı</p>
+                    </>
+                  )}
+                </div>
               </TimelineStep>
             )}
           </div>
@@ -267,7 +288,7 @@ export default function TalepDetay() {
         <div>
           <Link
             href="/taleplerim"
-            className="inline-flex items-center gap-2 px-4 py-2 text-[13px] font-medium border border-black/20 rounded-lg bg-white text-[#1c1c1a] hover:bg-gray-50 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 text-[13px] font-medium border border-surface-bordered rounded-lg bg-surface text-content-primary hover:bg-surface-muted transition-colors shadow-card"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
