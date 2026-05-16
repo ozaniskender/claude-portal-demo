@@ -22,8 +22,9 @@ export default function Login() {
         <div className="w-full max-w-md bg-surface rounded-card shadow-elevated p-8">
 
           {/* Logo */}
-          <div>
-            <img src="/definex-logo.svg" alt="Definex" width={52} height={52} />
+          <div className="flex items-center gap-2.5">
+            <img src="/definex-logo.svg" alt="Definex" width={36} height={36} />
+            <span className="font-semibold text-[18px] tracking-tight text-brand-navy">Definex</span>
           </div>
 
           {/* Subtitle */}

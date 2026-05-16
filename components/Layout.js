@@ -90,15 +90,11 @@ export default function Layout({ children }) {
             <img
               src="/definex-logo.svg"
               alt="Definex"
-              width={28}
-              height={28}
+              width={40}
+              height={40}
               className="brightness-0 invert"
             />
-            <div className="flex items-center gap-1.5">
-              <span className="font-semibold text-[15px] tracking-tight text-white">Definex</span>
-              <span className="text-white/30 text-sm">·</span>
-              <span className="text-[13px] text-[#8FAEED] font-medium">Claude Lisans Portalı</span>
-            </div>
+            <span className="text-[13px] text-[#8FAEED] font-medium">Claude Lisans Portalı</span>
           </Link>
 
           {/* Nav */}
