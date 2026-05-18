@@ -151,9 +151,12 @@ export default function TalepSpend() {
                 placeholder="Örn: İş Bankası PYS projesinin yeni fazında günlük olarak büyük döküman analizleri ve müşteri profil raporları oluşturuyorum. Son iki ay Medium limit'i sürekli aştı..."
                 className="w-full px-3 py-2 text-sm border border-surface-bordered rounded-lg bg-surface text-content-primary resize-y min-h-[90px] focus:outline-none focus:ring-2 focus:ring-brand-primary/40"
               />
-              <p className={`text-[11px] mt-1 text-right ${gerekce.length >= 50 ? "text-state-success" : "text-content-tertiary"}`}>
-                {gerekce.length} / 50 karakter
-              </p>
+              <div className="flex justify-between items-end mt-2">
+                <p className="text-[11px] text-content-tertiary">En az 50 karakter</p>
+                <p className={`text-[11px] ${gerekce.length >= 50 ? "text-state-success" : "text-content-tertiary"}`}>
+                  {gerekce.length} / 50 karakter
+                </p>
+              </div>
             </div>
 
             {/* Footer */}
