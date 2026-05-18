@@ -98,7 +98,7 @@ export default function Talep() {
     );
   }
 
-  const isSubmittable = aup && veri && egitim && gerekce.length >= 100;
+  const isSubmittable = aup && veri && egitim && gerekce.trim().length > 0;
 
   const requestDate = new Date().toLocaleDateString("tr-TR", {
     day: "numeric", month: "long", year: "numeric",
@@ -196,7 +196,7 @@ export default function Talep() {
                 Kullanım gerekçesi<span className="text-state-danger ml-0.5">*</span>
               </label>
               <p className="text-[12px] text-content-secondary mb-1.5">
-                Claude&apos;u hangi iş akışlarında, ne sıklıkta kullanmayı düşünüyorsunuz? (min. 100 karakter)
+                Claude&apos;u hangi iş akışlarında, ne sıklıkta kullanmayı düşünüyorsunuz?
               </p>
               <textarea
                 value={gerekce}
@@ -204,12 +204,6 @@ export default function Talep() {
                 placeholder="Örn: İş Bankası PYS projesinde müşteri segmentasyon raporlarının taslaklarını oluşturmak, mevcut Excel modellerini açıklayan dokümantasyon yazmak ve sunum görsellerini revize etmek için günlük olarak kullanmayı planlıyorum..."
                 className="w-full px-3 py-2 text-sm border border-surface-bordered rounded-lg bg-surface text-content-primary resize-y min-h-[90px] focus:outline-none focus:ring-2 focus:ring-brand-primary/40"
               />
-              <div className="flex justify-between items-end mt-2">
-                <p className="text-[11px] text-content-tertiary">En az 100 karakter</p>
-                <p className={`text-[11px] ${gerekce.length >= 100 ? "text-state-success" : "text-content-tertiary"}`}>
-                  {gerekce.length} / 100 karakter
-                </p>
-              </div>
             </div>
 
             {/* Onaylar */}
@@ -260,21 +254,13 @@ export default function Talep() {
                 </svg>
                 <span>Gönderim sonrası Zeynep Şen&apos;e onay maili iletilir</span>
               </div>
-              <div className="flex gap-2">
-                <Link
-                  href="/"
-                  className="px-4 py-2 text-[13px] font-medium border border-surface-bordered rounded-lg bg-surface text-content-primary hover:bg-surface-muted transition-colors"
-                >
-                  İptal
-                </Link>
-                <button
-                  onClick={handleSubmit}
-                  disabled={!isSubmittable}
-                  className="px-4 py-2 text-[13px] font-medium rounded-lg bg-brand-primary text-white hover:bg-brand-primary-dark transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  Talebi gönder
-                </button>
-              </div>
+              <button
+                onClick={handleSubmit}
+                disabled={!isSubmittable}
+                className="px-4 py-2 text-[13px] font-medium rounded-lg bg-brand-primary text-white hover:bg-brand-primary-dark transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Talebi gönder
+              </button>
             </div>
           </div>
         </div>
