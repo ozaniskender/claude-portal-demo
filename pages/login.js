@@ -65,6 +65,7 @@ export default function Login() {
                   placeholder="Kurumsal e-posta adresi"
                   className="w-full border border-surface-bordered rounded-lg px-3.5 py-3 text-[14px] text-content-primary bg-surface placeholder:text-content-tertiary focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-colors"
                 />
+                <p className="text-content-tertiary text-xs mt-1.5">En az 3 karakter</p>
               </div>
 
               {/* Forgot link */}
@@ -124,6 +125,7 @@ export default function Login() {
                   placeholder="Şifreniz"
                   className="w-full border border-surface-bordered rounded-lg px-3.5 py-3 text-[14px] text-content-primary bg-surface placeholder:text-content-tertiary focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-colors"
                 />
+                <p className="text-content-tertiary text-xs mt-1.5">En az 6 karakter</p>
               </div>
 
               {/* Forgot password link */}
