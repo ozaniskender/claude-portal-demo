@@ -204,9 +204,12 @@ export default function Talep() {
                 placeholder="Örn: İş Bankası PYS projesinde müşteri segmentasyon raporlarının taslaklarını oluşturmak, mevcut Excel modellerini açıklayan dokümantasyon yazmak ve sunum görsellerini revize etmek için günlük olarak kullanmayı planlıyorum..."
                 className="w-full px-3 py-2 text-sm border border-surface-bordered rounded-lg bg-surface text-content-primary resize-y min-h-[90px] focus:outline-none focus:ring-2 focus:ring-brand-primary/40"
               />
-              <p className={`text-[11px] mt-1 text-right ${gerekce.length >= 100 ? "text-state-success" : "text-content-tertiary"}`}>
-                {gerekce.length} / 100 karakter
-              </p>
+              <div className="flex justify-between items-end mt-2">
+                <p className="text-[11px] text-content-tertiary">En az 100 karakter</p>
+                <p className={`text-[11px] ${gerekce.length >= 100 ? "text-state-success" : "text-content-tertiary"}`}>
+                  {gerekce.length} / 100 karakter
+                </p>
+              </div>
             </div>
 
             {/* Onaylar */}
