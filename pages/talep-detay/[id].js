@@ -36,7 +36,7 @@ function RequestContent({ req }) {
       <div className="grid grid-cols-2 gap-4">
         <InfoRow label="Capability" value={data.capability} />
         <InfoRow label="Proje / Hesap" value={data.account} />
-        <InfoRow label="Seniority" value={data.level} />
+        <InfoRow label="Level of Practise" value={data.level} />
         <InfoRow label="Tool Yetkisi" value={data.tool} />
         <div className="col-span-2">
           <InfoRow label="Kullanım Gerekçesi" value={data.gerekce} />
@@ -251,25 +251,7 @@ export default function TalepDetay() {
                         {formatDate(req.provisioning.at)} · {req.provisioning.by}
                       </p>
                       {req.provisioning.internalNote && (
-                        <p className="text-[12px] text-content-secondary italic mb-2">{req.provisioning.internalNote}</p>
-                      )}
-                      {req.provisioning.apiCalls?.length > 0 && (
-                        <div className="bg-brand-navy rounded-lg px-3.5 py-2.5 font-mono text-[11px] leading-relaxed flex flex-col gap-0.5 mt-2">
-                          {req.provisioning.apiCalls.map((call, i) => {
-                            if (typeof call === "string") {
-                              return <span key={i} className="text-[#8FAEED]">{call}</span>;
-                            }
-                            return (
-                              <div key={i} className="flex gap-2 flex-wrap">
-                                <span className={call.method === "DELETE" ? "text-[#F0AEAE] font-medium" : "text-[#97c459] font-medium"}>
-                                  {call.method}
-                                </span>
-                                <span className="text-[#8FAEED]">{call.path}</span>
-                                {call.comment && <span className="text-[#6B7894]">{"# "}{call.comment}</span>}
-                              </div>
-                            );
-                          })}
-                        </div>
+                        <p className="text-[12px] text-content-secondary italic">{req.provisioning.internalNote}</p>
                       )}
                     </>
                   ) : (

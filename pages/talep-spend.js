@@ -5,9 +5,6 @@ import Layout from "@/components/Layout";
 import Link from "next/link";
 import users from "@/data/users.json";
 
-const burcak = users.find((u) => u.id === "burcak");
-const zeynep = users.find((u) => u.id === "zeynep");
-
 const SELECT_ARROW = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%233B4A6B' d='M2 4l4 4 4-4'/%3E%3C/svg%3E")`;
 
 function StyledSelect({ value, onChange, options, disabled }) {
@@ -41,12 +38,14 @@ export default function TalepSpend() {
   }
 
   function handleSubmit() {
+    const activeUser = users.find((u) => u.id === (persona === "Zeynep" ? "zeynep" : "burcak"));
+    const managerUser = users.find((u) => u.id === activeUser?.manager);
     const reqId = `REQ-2026-${String(Math.floor(1000 + Math.random() * 9000))}`;
     const request = {
       id: reqId,
       type: "spend_upgrade",
-      requester: burcak.name,
-      manager: zeynep.name,
+      requester: activeUser?.name || persona,
+      manager: managerUser?.name || "",
       state: "pending_manager_approval",
       data: { currentTier: "Medium", requestedTier, gerekce },
       createdAt: new Date().toISOString(),
@@ -54,25 +53,27 @@ export default function TalepSpend() {
     const existing = JSON.parse(localStorage.getItem("requests") || "[]");
     localStorage.setItem("requests", JSON.stringify([...existing, request]));
     localStorage.setItem("lastRequestId", reqId);
+    localStorage.setItem("lastRequestManager", managerUser?.name || "");
     router.push("/onay-bekleniyor");
   }
 
   if (persona === null) return null;
 
-  if (persona !== "Burçak") {
+  if (persona === "Hakan") {
     return (
       <Layout>
         <div className="flex items-center justify-center min-h-[50vh]">
-          <p className="text-content-secondary text-sm">Bu sayfayı sadece kullanıcı görebilir.</p>
+          <p className="text-content-secondary text-sm">Bu sayfayı sadece kullanıcı veya manager görebilir.</p>
         </div>
       </Layout>
     );
   }
 
+  const activeUser = users.find((u) => u.id === (persona === "Zeynep" ? "zeynep" : "burcak"));
+  const managerUser = users.find((u) => u.id === activeUser?.manager);
+
   const requestDate = new Date().toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" }) +
     ", " + new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
-
-  const isSubmittable = gerekce.length >= 50;
 
   return (
     <Layout>
@@ -110,11 +111,11 @@ export default function TalepSpend() {
               </div>
               <div className="grid grid-cols-2 gap-y-3.5 gap-x-5">
                 {[
-                  ["Ad Soyad", burcak.name],
-                  ["Email", burcak.email],
+                  ["Ad Soyad", activeUser?.name || ""],
+                  ["Email", activeUser?.email || ""],
                   ["Capability", "BA & CE"],
-                  ["Job Title", "Consultant"],
-                  ["Manager", zeynep.email],
+                  ["Job Title", activeUser?.jobTitle || "Consultant"],
+                  ["Manager", managerUser?.email || ""],
                   ["Talep tarihi", requestDate],
                 ].map(([label, value]) => (
                   <div key={label}>
@@ -151,12 +152,6 @@ export default function TalepSpend() {
                 placeholder="Örn: İş Bankası PYS projesinin yeni fazında günlük olarak büyük döküman analizleri ve müşteri profil raporları oluşturuyorum. Son iki ay Medium limit'i sürekli aştı..."
                 className="w-full px-3 py-2 text-sm border border-surface-bordered rounded-lg bg-surface text-content-primary resize-y min-h-[90px] focus:outline-none focus:ring-2 focus:ring-brand-primary/40"
               />
-              <div className="flex justify-between items-end mt-2">
-                <p className="text-[11px] text-content-tertiary">En az 50 karakter</p>
-                <p className={`text-[11px] ${gerekce.length >= 50 ? "text-state-success" : "text-content-tertiary"}`}>
-                  {gerekce.length} / 50 karakter
-                </p>
-              </div>
             </div>
 
             {/* Footer */}
@@ -173,8 +168,7 @@ export default function TalepSpend() {
                 </Link>
                 <button
                   onClick={handleSubmit}
-                  disabled={!isSubmittable}
-                  className="px-4 py-2 text-[13px] font-medium rounded-lg bg-brand-primary text-white hover:bg-brand-primary-dark transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="px-4 py-2 text-[13px] font-medium rounded-lg bg-brand-primary text-white hover:bg-brand-primary-dark transition-colors"
                 >
                   Talebi gönder
                 </button>

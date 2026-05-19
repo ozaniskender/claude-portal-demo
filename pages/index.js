@@ -2,18 +2,165 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import Layout from "@/components/Layout";
 import Link from "next/link";
+import { useRouter } from "next/router";
+
+/* ── Metric helpers ── */
+
+function StatusDot({ active }) {
+  return (
+    <span
+      className="inline-block w-2 h-2 rounded-full shrink-0"
+      style={{ backgroundColor: active ? "#5DCAA5" : "#888780" }}
+    />
+  );
+}
+
+function MetricCard({ label, children, href }) {
+  const router = useRouter();
+  const clickable = !!href;
+
+  return (
+    <div
+      onClick={clickable ? () => router.push(href) : undefined}
+      className={`flex flex-col gap-1.5 px-6 ${clickable ? "cursor-pointer group" : ""}`}
+    >
+      <span
+        className="text-[11px] font-semibold uppercase tracking-[0.05em]"
+        style={{ color: "rgba(255,255,255,0.5)" }}
+      >
+        {label}
+      </span>
+      <div className="flex items-center gap-2">
+        {children}
+        {clickable && (
+          <span
+            className="text-[14px] opacity-0 group-hover:opacity-100 transition-opacity"
+            style={{ color: "rgba(255,255,255,0.7)" }}
+          >
+            →
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function NumericValue({ value }) {
+  return (
+    <span className="text-[22px] font-medium text-white leading-none">
+      {value}
+    </span>
+  );
+}
+
+function StatusValue({ active }) {
+  return (
+    <div className="flex items-center gap-2">
+      <StatusDot active={active} />
+      <span className="text-[16px] font-medium text-white leading-none">
+        {active ? "Aktif" : "Henüz yok"}
+      </span>
+    </div>
+  );
+}
+
+const DIVIDER = (
+  <div
+    className="self-stretch w-px shrink-0"
+    style={{ backgroundColor: "rgba(255,255,255,0.08)" }}
+  />
+);
+
+/* ── Persona-aware metrics row ── */
+
+function MetricsRow({ persona, requests }) {
+  const personaName =
+    persona === "Burçak" ? "Burçak Göksel"
+    : persona === "Zeynep" ? "Zeynep Şen"
+    : "Hakan Kormanlı";
+
+  const openMine = requests.filter(
+    (r) =>
+      r.requester === personaName &&
+      (r.state === "pending_manager_approval" || r.state === "pending_provisioning")
+  ).length;
+
+  const hasActiveLicense = requests.some(
+    (r) =>
+      r.requester === personaName &&
+      r.type === "new_license" &&
+      r.state === "completed"
+  );
+
+  // Zeynep
+  const pendingManagerApproval = requests.filter(
+    (r) => r.manager === "Zeynep Şen" && r.state === "pending_manager_approval"
+  ).length;
+
+  // Hakan
+  const pendingProvisioning = requests.filter(
+    (r) => r.state === "pending_provisioning"
+  ).length;
+
+  if (persona === "Burçak") {
+    return (
+      <div className="flex items-center mt-6">
+        <MetricCard label="Açık taleplerim" href="/taleplerim">
+          <NumericValue value={openMine} />
+        </MetricCard>
+        {DIVIDER}
+        <MetricCard label="Lisans durumum">
+          <StatusValue active={hasActiveLicense} />
+        </MetricCard>
+      </div>
+    );
+  }
+
+  if (persona === "Zeynep") {
+    return (
+      <div className="flex items-center mt-6">
+        <MetricCard label="Açık taleplerim" href="/taleplerim">
+          <NumericValue value={openMine} />
+        </MetricCard>
+        {DIVIDER}
+        <MetricCard label="Lisans durumum">
+          <StatusValue active={hasActiveLicense} />
+        </MetricCard>
+        {DIVIDER}
+        <MetricCard label="Onayımı bekleyen" href="/manager-taleplerim">
+          <NumericValue value={pendingManagerApproval} />
+        </MetricCard>
+      </div>
+    );
+  }
+
+  if (persona === "Hakan") {
+    return (
+      <div className="flex items-center mt-6">
+        <MetricCard label="Lisans durumum">
+          <StatusValue active={hasActiveLicense} />
+        </MetricCard>
+        {DIVIDER}
+        <MetricCard label="Bekleyen provisioning" href="/dashboard">
+          <NumericValue value={pendingProvisioning} />
+        </MetricCard>
+      </div>
+    );
+  }
+
+  return null;
+}
+
+/* ── Page ── */
 
 export default function Home() {
-  const [openCount, setOpenCount] = useState(null);
+  const [persona, setPersona] = useState(null);
+  const [requests, setRequests] = useState([]);
 
   useEffect(() => {
-    const reqs = JSON.parse(localStorage.getItem("requests") || "[]");
-    const open = reqs.filter(
-      (r) =>
-        r.requester === "Burçak Göksel" &&
-        (r.state === "pending_manager_approval" || r.state === "pending_provisioning")
-    ).length;
-    setOpenCount(open);
+    const p = localStorage.getItem("currentPersona") || "Burçak";
+    setPersona(p);
+    setRequests(JSON.parse(localStorage.getItem("requests") || "[]"));
   }, []);
 
   return (
@@ -35,16 +182,17 @@ export default function Home() {
           }}
         />
 
-        <div className="relative px-10 py-12 max-w-xl">
+        <div className="relative px-10 py-10 max-w-xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-primary/20 border border-brand-primary/30 text-[#8FAEED] text-[12px] font-medium mb-5">
             <span className="w-1.5 h-1.5 rounded-full bg-[#8FAEED]" />
             Claude Enterprise
           </div>
 
-          <h1 className="text-[32px] font-bold leading-tight mb-3 text-white">
+          <h1 className="text-[32px] font-bold leading-tight mb-4 text-white">
             Lisans Yönetim Portalı
           </h1>
-          <div className="flex items-center gap-3 flex-wrap mb-5">
+
+          <div className="flex items-center gap-3 flex-wrap">
             <Link
               href="/talep"
               className="inline-flex items-center gap-2 bg-brand-primary text-white px-5 py-2.5
@@ -81,13 +229,9 @@ export default function Home() {
             </button>
           </div>
 
-          {openCount !== null && openCount > 0 && (
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-primary/20 border border-brand-primary/30 text-[#8FAEED] text-[13px] font-medium">
-              <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-brand-primary text-white text-[11px] font-semibold">
-                {openCount}
-              </span>
-              açık talep bekliyor
-            </div>
+          {/* Metrics */}
+          {persona !== null && (
+            <MetricsRow persona={persona} requests={requests} />
           )}
         </div>
       </div>

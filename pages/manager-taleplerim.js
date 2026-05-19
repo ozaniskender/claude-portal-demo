@@ -97,18 +97,13 @@ function RequestCard({ req, showRequester = true, href }) {
   );
 }
 
-function EmptyState({ message, linkHref, linkLabel }) {
+function EmptyState({ message }) {
   return (
     <div className="px-6 py-16 text-center">
       <svg className="w-8 h-8 text-surface-bordered mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
       </svg>
-      <p className="text-content-secondary text-[13px] mb-3">{message}</p>
-      {linkHref && (
-        <Link href={linkHref} className="text-[13px] font-medium text-brand-primary hover:underline">
-          {linkLabel}
-        </Link>
-      )}
+      <p className="text-content-secondary text-[13px]">{message}</p>
     </div>
   );
 }
@@ -140,145 +135,11 @@ function TabBar({ tabs, active, onChange }) {
   );
 }
 
-function SectionHeader({ title, desc }) {
-  return (
-    <div className="px-6 py-5 border-b border-surface-bordered flex items-start gap-3">
-      <div className="w-1 h-5 rounded-full bg-brand-primary mt-0.5 shrink-0" />
-      <div>
-        <p className="font-semibold text-[17px] text-content-primary mb-0.5">{title}</p>
-        <p className="text-[13px] text-content-secondary">{desc}</p>
-      </div>
-    </div>
-  );
-}
-
-// Burçak view
-function BurcakView({ requests }) {
-  const [search, setSearch] = useState("");
-
-  const mine = requests
-    .filter((r) => r.requester === "Burçak Göksel")
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-  const filtered = mine.filter((r) => matchesSearch(r, search));
-
-  return (
-    <div className="bg-surface rounded-card border border-surface-bordered shadow-card overflow-hidden">
-      <SectionHeader title="Taleplerim" desc="Oluşturduğunuz tüm talepler." />
-      <SearchInput value={search} onChange={setSearch} />
-      <div className="divide-y divide-surface-bordered">
-        {mine.length === 0 ? (
-          <EmptyState
-            message="Henüz hiç talep oluşturmadınız."
-            linkHref="/talep"
-            linkLabel="Yeni talep oluştur"
-          />
-        ) : filtered.length === 0 ? (
-          <EmptyState message="Arama sonucu bulunamadı." />
-        ) : (
-          filtered.map((req) => (
-            <RequestCard
-              key={req.id}
-              req={req}
-              showRequester={false}
-              href={`/talep-detay/${req.id}`}
-            />
-          ))
-        )}
-      </div>
-    </div>
-  );
-}
-
-// Zeynep view — kendi açtığı talepler
-function ZeynepView({ requests }) {
-  const [search, setSearch] = useState("");
-
-  const mine = requests
-    .filter((r) => r.requester === "Zeynep Şen")
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-  const filtered = mine.filter((r) => matchesSearch(r, search));
-
-  return (
-    <div className="bg-surface rounded-card border border-surface-bordered shadow-card overflow-hidden">
-      <SectionHeader title="Taleplerim" desc="Oluşturduğunuz tüm talepler." />
-      <SearchInput value={search} onChange={setSearch} />
-      <div className="divide-y divide-surface-bordered">
-        {mine.length === 0 ? (
-          <EmptyState
-            message="Henüz hiç talep oluşturmadınız."
-            linkHref="/talep"
-            linkLabel="Yeni talep oluştur"
-          />
-        ) : filtered.length === 0 ? (
-          <EmptyState message="Arama sonucu bulunamadı." />
-        ) : (
-          filtered.map((req) => (
-            <RequestCard
-              key={req.id}
-              req={req}
-              showRequester={false}
-              href={`/talep-detay/${req.id}`}
-            />
-          ))
-        )}
-      </div>
-    </div>
-  );
-}
-
-// Hakan view
-function HakanView({ requests }) {
-  const [activeTab, setActiveTab] = useState("queue");
-  const [search, setSearch] = useState("");
-
-  const queue = requests.filter(
-    (r) => r.state === "pending_provisioning"
-  ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-  const done = requests.filter(
-    (r) => r.provisioning?.by === "Hakan Kormanlı"
-  ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-  const activeList = activeTab === "queue" ? queue : done;
-  const filtered = activeList.filter((r) => matchesSearch(r, search));
-
-  const tabs = [
-    { key: "queue", label: "Bekleyen queue", count: queue.length },
-    { key: "done", label: "Tamamladıklarım", count: done.length },
-  ];
-
-  return (
-    <div className="bg-surface rounded-card border border-surface-bordered shadow-card overflow-hidden">
-      <SectionHeader title="Taleplerim" desc="Provisioning kuyruğu ve tamamlanan işlemler." />
-      <TabBar tabs={tabs} active={activeTab} onChange={(k) => { setActiveTab(k); setSearch(""); }} />
-      <SearchInput value={search} onChange={setSearch} />
-      <div className="divide-y divide-surface-bordered">
-        {activeList.length === 0 ? (
-          activeTab === "queue"
-            ? <EmptyState message="Provisioning kuyruğu boş ✓" />
-            : <EmptyState message="Henüz tamamladığınız bir talep yok." />
-        ) : filtered.length === 0 ? (
-          <EmptyState message="Arama sonucu bulunamadı." />
-        ) : (
-          filtered.map((req) => (
-            <RequestCard
-              key={req.id}
-              req={req}
-              showRequester={true}
-              href={activeTab === "queue" ? `/admin-provision/${req.id}` : `/talep-detay/${req.id}`}
-            />
-          ))
-        )}
-      </div>
-    </div>
-  );
-}
-
-export default function Taleplerim() {
+export default function ManagerTaleplerim() {
   const [persona, setPersona] = useState(null);
   const [requests, setRequests] = useState([]);
+  const [activeTab, setActiveTab] = useState("pending");
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const p = localStorage.getItem("currentPersona") || "Burçak";
@@ -288,13 +149,69 @@ export default function Taleplerim() {
 
   if (persona === null) return null;
 
+  if (persona !== "Zeynep") {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <p className="text-content-secondary text-sm">Bu sayfayı sadece manager görebilir.</p>
+        </div>
+      </Layout>
+    );
+  }
+
+  const pending = requests
+    .filter((r) => r.manager === "Zeynep Şen" && r.state === "pending_manager_approval")
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  const history = requests
+    .filter((r) => r.managerApproval?.by === "Zeynep Şen")
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  const activeList = activeTab === "pending" ? pending : history;
+  const filtered = activeList.filter((r) => matchesSearch(r, search));
+
+  const tabs = [
+    { key: "pending", label: "Onayımı bekleyenler", count: pending.length },
+    { key: "history", label: "Geçmiş onaylarım", count: history.length },
+  ];
+
   return (
     <Layout>
-      <Head><title>Taleplerim · Definex</title></Head>
+      <Head><title>Manager Taleplerim · Definex</title></Head>
       <div className="max-w-[820px] mx-auto">
-        {persona === "Burçak" && <BurcakView requests={requests} />}
-        {persona === "Zeynep" && <ZeynepView requests={requests} />}
-        {persona === "Hakan" && <HakanView requests={requests} />}
+        <div className="bg-surface rounded-card border border-surface-bordered shadow-card overflow-hidden">
+          <div className="px-6 py-5 border-b border-surface-bordered flex items-start gap-3">
+            <div className="w-1 h-5 rounded-full bg-brand-primary mt-0.5 shrink-0" />
+            <div>
+              <p className="font-semibold text-[17px] text-content-primary mb-0.5">Manager Taleplerim</p>
+              <p className="text-[13px] text-content-secondary">Onayınızı bekleyen ve geçmiş onay işlemleriniz.</p>
+            </div>
+          </div>
+          <TabBar
+            tabs={tabs}
+            active={activeTab}
+            onChange={(k) => { setActiveTab(k); setSearch(""); }}
+          />
+          <SearchInput value={search} onChange={setSearch} />
+          <div className="divide-y divide-surface-bordered">
+            {activeList.length === 0 ? (
+              activeTab === "pending"
+                ? <EmptyState message="Henüz bekleyen talep yok ✓" />
+                : <EmptyState message="Henüz onayladığınız bir talep yok." />
+            ) : filtered.length === 0 ? (
+              <EmptyState message="Arama sonucu bulunamadı." />
+            ) : (
+              filtered.map((req) => (
+                <RequestCard
+                  key={req.id}
+                  req={req}
+                  showRequester={true}
+                  href={activeTab === "pending" ? `/manager-onay/${req.id}` : `/talep-detay/${req.id}`}
+                />
+              ))
+            )}
+          </div>
+        </div>
       </div>
     </Layout>
   );

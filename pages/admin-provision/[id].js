@@ -166,7 +166,7 @@ function NewLicenseView({ req, limitOverride, setLimitOverride, internalNote, se
             {[
               ["Capability", req.data?.capability || "BA & CE"],
               ["Account", req.data?.account || "İş Bankası"],
-              ["Seniority", req.data?.level || "Consultant"],
+              ["Level of Practise", req.data?.level || "Consultant"],
               ["Tool yetkisi (Custom Role)", tool],
               ["Spend kademesi", "Medium (default)"],
               ["Panel rolü", "Custom roles"],

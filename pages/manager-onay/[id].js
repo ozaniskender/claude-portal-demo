@@ -150,7 +150,7 @@ function NewLicenseView({ req, toolYetkisi, setToolYetkisi, note, setNote, onRej
             {[
               ["Capability", req.data.capability || "BA & CE"],
               ["Account", req.data.account || "İş Bankası"],
-              ["Seniority", req.data.level || "Consultant"],
+              ["Level of Practise", req.data.level || "Consultant"],
             ].map(([label, value]) => (
               <div key={label}>
                 <label className="block text-[13px] font-medium text-content-primary mb-1.5">{label}</label>

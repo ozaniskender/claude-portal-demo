@@ -12,6 +12,11 @@ const BASE_NAV = [
   { href: "/", label: "Ana Sayfa" },
   { href: "/taleplerim", label: "Taleplerim" },
 ];
+const ZEYNEP_NAV = [
+  { href: "/", label: "Ana Sayfa" },
+  { href: "/taleplerim", label: "Taleplerim" },
+  { href: "/manager-taleplerim", label: "Manager Taleplerim" },
+];
 const HAKAN_NAV = [
   { href: "/", label: "Ana Sayfa" },
   { href: "/taleplerim", label: "Taleplerim" },
@@ -78,7 +83,7 @@ export default function Layout({ children }) {
     router.push("/login");
   }
 
-  const navLinks = persona === "Hakan" ? HAKAN_NAV : BASE_NAV;
+  const navLinks = persona === "Hakan" ? HAKAN_NAV : persona === "Zeynep" ? ZEYNEP_NAV : BASE_NAV;
   const currentPersona = PERSONAS.find((p) => p.key === persona) || PERSONAS[0];
 
   return (

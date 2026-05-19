@@ -5,9 +5,12 @@ import Link from "next/link";
 
 export default function OnayBekleniyor() {
   const [reqId, setReqId] = useState(null);
+  const [managerName, setManagerName] = useState("Yöneticiniz");
 
   useEffect(() => {
     setReqId(localStorage.getItem("lastRequestId") || "REQ-2026-????");
+    const mgr = localStorage.getItem("lastRequestManager");
+    if (mgr) setManagerName(mgr);
   }, []);
 
   return (
@@ -25,7 +28,7 @@ export default function OnayBekleniyor() {
               Talebiniz oluşturuldu
             </h1>
             <p className="text-[13px] text-[#4a6824]">
-              Zeynep Şen&apos;e onay için iletildi
+              {managerName}&apos;e onay için iletildi
             </p>
           </div>
 
@@ -43,7 +46,7 @@ export default function OnayBekleniyor() {
                   <line x1="12" y1="8" x2="12.01" y2="8" />
                 </svg>
                 <span>
-                  Zeynep Şen talebinizi inceleyecek. Onay veya red durumunda e-posta ile bilgilendirileceksiniz.
+                  {managerName} talebinizi inceleyecek. Onay veya red durumunda e-posta ile bilgilendirileceksiniz.
                 </span>
               </div>
             </div>

@@ -1,4 +1,4 @@
-const SEED_VERSION = "v1";
+const SEED_VERSION = "v3";
 
 function daysAgo(n) {
   return new Date(Date.now() - n * 24 * 60 * 60 * 1000).toISOString();
@@ -12,7 +12,7 @@ const SEED_REQUESTS = [
     manager: "Zeynep Şen",
     state: "rejected_by_manager",
     data: {
-      capability: "claude-sonnet-4",
+      capability: "Tech Consulting",
       account: "İş Bankası",
       level: "Consultant",
       tool: "Chat + Code",
@@ -32,7 +32,7 @@ const SEED_REQUESTS = [
     manager: "Zeynep Şen",
     state: "completed",
     data: {
-      capability: "claude-sonnet-4",
+      capability: "BA & CE",
       account: "İş Bankası",
       level: "Consultant",
       tool: "Chat",
@@ -61,7 +61,7 @@ const SEED_REQUESTS = [
     manager: "Zeynep Şen",
     state: "completed",
     data: {
-      capability: "claude-sonnet-4",
+      capability: "Tech Consulting",
       account: "Garanti BBVA",
       level: "Senior Developer",
       tool: "Chat",
@@ -178,11 +178,54 @@ const SEED_REQUESTS = [
     manager: "Zeynep Şen",
     state: "pending_manager_approval",
     data: {
-      capability: "claude-haiku-4",
+      capability: "AI & Analytics",
       account: "İç Proje",
       level: "Consultant",
       tool: "Chat",
       gerekce: "AI & Analytics ekibinde proje süreçlerini hızlandırmak için Claude'a ihtiyacım var.",
+    },
+    createdAt: daysAgo(1),
+  },
+  // Zeynep'in kendi talepleri
+  {
+    id: "REQ-2026-0051",
+    type: "new_license",
+    requester: "Zeynep Şen",
+    manager: "Eren Söyler",
+    state: "completed",
+    data: {
+      capability: "BA & CE",
+      account: "İş Bankası",
+      level: "Lead",
+      tool: "Chat + Code",
+      gerekce: "Ekip yönetimi ve teknik karar süreçlerinde yapay zeka desteğine ihtiyacım var.",
+    },
+    createdAt: daysAgo(60),
+    managerApproval: {
+      by: "Eren Söyler",
+      at: daysAgo(59),
+      note: "Onaylandı.",
+    },
+    provisioning: {
+      by: "Hakan Kormanlı",
+      at: daysAgo(58),
+      internalNote: "Manager lisansı oluşturuldu.",
+      apiCalls: [
+        { method: "POST", path: "/v1/organizations/{org_id}/users", comment: "Kullanıcı oluştur" },
+        { method: "POST", path: "/v1/organizations/{org_id}/users/{id}/groups", comment: "Custom Role: Chat + Code" },
+      ],
+    },
+  },
+  {
+    id: "REQ-2026-0171",
+    type: "spend_upgrade",
+    requester: "Zeynep Şen",
+    manager: "Eren Söyler",
+    state: "pending_manager_approval",
+    data: {
+      currentTier: "Medium",
+      requestedTier: "High",
+      gerekce: "Q2 proje yoğunluğu nedeniyle mevcut limit yetersiz kalıyor.",
     },
     createdAt: daysAgo(1),
   },

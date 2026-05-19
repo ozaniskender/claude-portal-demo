@@ -5,9 +5,6 @@ import Layout from "@/components/Layout";
 import users from "@/data/users.json";
 import Link from "next/link";
 
-const burcak = users.find((u) => u.id === "burcak");
-const zeynep = users.find((u) => u.id === "zeynep");
-
 const CAPABILITY_OPTIONS = ["BA & CE", "Tech Consulting", "AI & Analytics", "Marketing"];
 const ACCOUNT_OPTIONS = ["İş Bankası", "Garanti", "Türk Telekom", "N/A"];
 const LEVEL_OPTIONS = ["Consultant", "Lead Developer", "Principal", "Expert"];
@@ -70,12 +67,14 @@ export default function Talep() {
   }
 
   function handleSubmit() {
+    const activeUser = users.find((u) => u.id === (persona === "Zeynep" ? "zeynep" : "burcak"));
+    const managerUser = users.find((u) => u.id === activeUser?.manager);
     const reqId = `REQ-2026-${String(Math.floor(1000 + Math.random() * 9000))}`;
     const request = {
       id: reqId,
       type: "new_license",
-      requester: burcak.name,
-      manager: zeynep.name,
+      requester: activeUser?.name || persona,
+      manager: managerUser?.name || "",
       state: "pending_manager_approval",
       data: { capability, account, level, tool, gerekce },
       createdAt: new Date().toISOString(),
@@ -83,22 +82,26 @@ export default function Talep() {
     const existing = JSON.parse(localStorage.getItem("requests") || "[]");
     localStorage.setItem("requests", JSON.stringify([...existing, request]));
     localStorage.setItem("lastRequestId", reqId);
+    localStorage.setItem("lastRequestManager", managerUser?.name || "");
     router.push("/onay-bekleniyor");
   }
 
   if (persona === null) return null;
 
-  if (persona !== "Burçak") {
+  if (persona === "Hakan") {
     return (
       <Layout>
         <div className="flex items-center justify-center min-h-[50vh]">
-          <p className="text-content-secondary text-sm">Bu sayfayı sadece kullanıcı görebilir.</p>
+          <p className="text-content-secondary text-sm">Bu sayfayı sadece kullanıcı veya manager görebilir.</p>
         </div>
       </Layout>
     );
   }
 
-  const isSubmittable = aup && veri && egitim && gerekce.trim().length > 0;
+  const activeUser = users.find((u) => u.id === (persona === "Zeynep" ? "zeynep" : "burcak"));
+  const managerUser = users.find((u) => u.id === activeUser?.manager);
+
+  const isSubmittable = aup && veri && egitim;
 
   const requestDate = new Date().toLocaleDateString("tr-TR", {
     day: "numeric", month: "long", year: "numeric",
@@ -142,11 +145,11 @@ export default function Talep() {
               </div>
               <div className="grid grid-cols-2 gap-y-3.5 gap-x-5">
                 {[
-                  ["Ad Soyad", burcak.name],
-                  ["Email", burcak.email],
+                  ["Ad Soyad", activeUser?.name || ""],
+                  ["Email", activeUser?.email || ""],
                   ["Capability", "BA & CE"],
-                  ["Job Title", "Consultant"],
-                  ["Manager", zeynep.email],
+                  ["Job Title", activeUser?.jobTitle || "Consultant"],
+                  ["Manager", managerUser?.email || ""],
                   ["Talep tarihi", requestDate],
                 ].map(([label, value]) => (
                   <div key={label}>
@@ -252,7 +255,7 @@ export default function Talep() {
                   <line x1="12" y1="16" x2="12" y2="12" />
                   <line x1="12" y1="8" x2="12.01" y2="8" />
                 </svg>
-                <span>Gönderim sonrası Zeynep Şen&apos;e onay maili iletilir</span>
+                <span>Gönderim sonrası {managerUser?.name || "yöneticinize"}&apos;e onay maili iletilir</span>
               </div>
               <button
                 onClick={handleSubmit}
