@@ -38,6 +38,17 @@ function NavLink({ href, label, isActive }) {
   );
 }
 
+function EgitimlerLink() {
+  return (
+    <button
+      onClick={(e) => e.preventDefault()}
+      className="px-3 py-1.5 text-sm rounded-md transition-colors font-medium text-white/80 hover:text-white hover:bg-white/10"
+    >
+      Eğitimler
+    </button>
+  );
+}
+
 export default function Layout({ children }) {
   const [persona, setPersona] = useState("Burçak");
   const [mounted, setMounted] = useState(false);
@@ -112,6 +123,7 @@ export default function Layout({ children }) {
                 isActive={router.pathname === link.href}
               />
             ))}
+            <EgitimlerLink />
           </nav>
 
           {/* Persona switcher + Logout */}
