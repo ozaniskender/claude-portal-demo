@@ -22,10 +22,10 @@ function MetricCard({ label, children, href }) {
   return (
     <div
       onClick={clickable ? () => router.push(href) : undefined}
-      className={`flex flex-col gap-1.5 px-6 ${clickable ? "cursor-pointer group" : ""}`}
+      className={`flex flex-col gap-1.5 px-3 md:px-6 ${clickable ? "cursor-pointer group" : ""}`}
     >
       <span
-        className="text-[11px] font-semibold uppercase tracking-[0.05em]"
+        className="text-[10px] md:text-[11px] font-semibold uppercase tracking-[0.04em] md:tracking-[0.05em] whitespace-nowrap"
         style={{ color: "rgba(255,255,255,0.5)" }}
       >
         {label}
@@ -104,7 +104,7 @@ function MetricsRow({ persona, requests }) {
 
   if (persona === "Burçak") {
     return (
-      <div className="flex items-center mt-6">
+      <div className="flex items-center mt-4 md:mt-6">
         <MetricCard label="Açık taleplerim" href="/taleplerim">
           <NumericValue value={openMine} />
         </MetricCard>
@@ -118,7 +118,7 @@ function MetricsRow({ persona, requests }) {
 
   if (persona === "Zeynep") {
     return (
-      <div className="flex items-center mt-6">
+      <div className="flex items-center mt-4 md:mt-6">
         <MetricCard label="Açık taleplerim" href="/taleplerim">
           <NumericValue value={openMine} />
         </MetricCard>
@@ -136,7 +136,7 @@ function MetricsRow({ persona, requests }) {
 
   if (persona === "Hakan") {
     return (
-      <div className="flex items-center mt-6">
+      <div className="flex items-center mt-4 md:mt-6">
         <MetricCard label="Lisans durumum">
           <StatusValue active={hasActiveLicense} />
         </MetricCard>
@@ -182,7 +182,7 @@ export default function Home() {
           }}
         />
 
-        <div className="relative px-10 py-10 max-w-xl">
+        <div className="relative px-5 py-7 md:px-10 md:py-10 max-w-xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-primary/20 border border-brand-primary/30 text-[#8FAEED] text-[12px] font-medium mb-5">
             <span className="w-1.5 h-1.5 rounded-full bg-[#8FAEED]" />
             Claude Enterprise

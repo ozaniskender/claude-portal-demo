@@ -50,7 +50,7 @@ function ProfileCard({ req }) {
         </svg>
         <span className="text-[11px] font-semibold text-content-tertiary uppercase tracking-wider">Profil bilgileri · Azure AD</span>
       </div>
-      <div className="grid grid-cols-2 gap-y-3.5 gap-x-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-y-3.5 gap-x-5">
         {[
           ["Ad Soyad", burcak.name],
           ["Email", burcak.email],
@@ -61,7 +61,7 @@ function ProfileCard({ req }) {
         ].map(([label, value]) => (
           <div key={label}>
             <p className="text-[10px] text-content-tertiary uppercase tracking-wider mb-0.5 font-semibold">{label}</p>
-            <p className="text-[14px] text-content-primary">{value}</p>
+            <p className="text-[14px] text-content-primary break-all">{value}</p>
           </div>
         ))}
       </div>
@@ -109,25 +109,25 @@ function CapPill({ label, blue }) {
 
 function ProvisionFooter({ onBack, onProvision, loading }) {
   return (
-    <div className="flex justify-between items-center pt-5 mt-3 border-t border-surface-bordered">
+    <div className="flex flex-col gap-3 md:flex-row md:justify-between md:items-center pt-5 mt-3 border-t border-surface-bordered">
       <div className="flex items-center gap-1.5 text-[12px] text-content-secondary">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0">
           <circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" />
         </svg>
         <span>Provisioning tamamlandığında Burçak&apos;a bilgilendirme maili gider</span>
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-2 w-full md:w-auto">
         <button
           onClick={onBack}
           disabled={loading}
-          className="px-4 py-2 text-[13px] font-medium border border-surface-bordered rounded-lg bg-surface text-content-primary hover:bg-surface-muted transition-colors disabled:opacity-40"
+          className="flex-1 md:flex-none px-4 py-2.5 text-[13px] font-medium border border-surface-bordered rounded-lg bg-surface text-content-primary hover:bg-surface-muted transition-colors disabled:opacity-40"
         >
           Geri dön
         </button>
         <button
           onClick={onProvision}
           disabled={loading}
-          className="min-w-[120px] px-4 py-2 text-[13px] font-medium rounded-lg bg-state-success text-white hover:bg-[#4a6824] transition-colors disabled:opacity-70 flex items-center justify-center gap-2"
+          className="flex-1 md:flex-none min-w-[120px] px-4 py-2.5 text-[13px] font-medium rounded-lg bg-state-success text-white hover:bg-[#4a6824] transition-colors disabled:opacity-70 flex items-center justify-center gap-2"
         >
           {loading ? (
             <>

@@ -143,7 +143,7 @@ export default function Talep() {
                   Profil bilgileri · Azure AD
                 </span>
               </div>
-              <div className="grid grid-cols-2 gap-y-3.5 gap-x-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-y-3.5 gap-x-5">
                 {[
                   ["Ad Soyad", activeUser?.name || ""],
                   ["Email", activeUser?.email || ""],
@@ -154,7 +154,7 @@ export default function Talep() {
                 ].map(([label, value]) => (
                   <div key={label}>
                     <p className="text-[10px] text-content-tertiary uppercase tracking-wider mb-0.5 font-semibold">{label}</p>
-                    <p className="text-[14px] text-content-primary">{value}</p>
+                    <p className="text-[14px] text-content-primary break-all">{value}</p>
                   </div>
                 ))}
               </div>

@@ -23,10 +23,11 @@ const HAKAN_NAV = [
   { href: "/dashboard", label: "Dashboard" },
 ];
 
-function NavLink({ href, label, isActive }) {
+function NavLink({ href, label, isActive, onClick }) {
   return (
     <Link
       href={href}
+      onClick={onClick}
       className={`px-3 py-1.5 text-sm rounded-md transition-colors font-medium ${
         isActive
           ? "bg-white/20 text-white"
@@ -38,21 +39,11 @@ function NavLink({ href, label, isActive }) {
   );
 }
 
-function EgitimlerLink() {
-  return (
-    <button
-      onClick={(e) => e.preventDefault()}
-      className="px-3 py-1.5 text-sm rounded-md transition-colors font-medium text-white/80 hover:text-white hover:bg-white/10"
-    >
-      Eğitimler
-    </button>
-  );
-}
-
 export default function Layout({ children }) {
   const [persona, setPersona] = useState("Burçak");
   const [mounted, setMounted] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -74,6 +65,10 @@ export default function Layout({ children }) {
     setIsCheckingAuth(false);
   }, []);
 
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [router.pathname]);
+
   if (isCheckingAuth && router.pathname !== "/login") {
     return <div className="min-h-screen bg-brand-soft-blue" />;
   }
@@ -82,6 +77,17 @@ export default function Layout({ children }) {
     const val = e.target.value;
     localStorage.setItem("currentPersona", val);
     if (router.pathname === "/dashboard" && val !== "Hakan") {
+      router.push("/");
+    } else {
+      router.reload();
+    }
+  }
+
+  function handlePersonaClick(key) {
+    setIsMenuOpen(false);
+    if (key === persona) return;
+    localStorage.setItem("currentPersona", key);
+    if (router.pathname === "/dashboard" && key !== "Hakan") {
       router.push("/");
     } else {
       router.reload();
@@ -99,22 +105,22 @@ export default function Layout({ children }) {
 
   return (
     <div className="min-h-screen bg-surface-muted flex flex-col">
-      <header className="bg-brand-navy text-white shadow-elevated">
-        <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between gap-6">
+      <header className="bg-brand-navy text-white shadow-elevated relative z-40">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 h-14 flex items-center justify-between gap-3">
           {/* Logo + Brand */}
-          <Link href="/" className="flex items-center gap-2.5 hover:opacity-85 transition-opacity shrink-0">
+          <Link href="/" className="flex items-center gap-2 hover:opacity-85 transition-opacity shrink-0">
             <img
               src="/definex-logo.svg"
               alt="Definex"
-              width={40}
-              height={40}
+              width={36}
+              height={36}
               className="brightness-0 invert"
             />
-            <span className="text-[13px] text-[#8FAEED] font-medium">Claude Lisans Portalı</span>
+            <span className="text-[12px] md:text-[13px] text-[#8FAEED] font-medium">Claude Lisans Portalı</span>
           </Link>
 
-          {/* Nav */}
-          <nav className="flex items-center gap-0.5">
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center gap-0.5">
             {navLinks.map((link) => (
               <NavLink
                 key={link.href}
@@ -123,12 +129,17 @@ export default function Layout({ children }) {
                 isActive={router.pathname === link.href}
               />
             ))}
-            <EgitimlerLink />
+            <button
+              onClick={(e) => e.preventDefault()}
+              className="px-3 py-1.5 text-sm rounded-md transition-colors font-medium text-white/80 hover:text-white hover:bg-white/10"
+            >
+              Eğitimler
+            </button>
           </nav>
 
-          {/* Persona switcher + Logout */}
+          {/* Desktop: Persona switcher + Logout */}
           {mounted && (
-            <div className="flex items-center gap-2.5 shrink-0">
+            <div className="hidden md:flex items-center gap-2.5 shrink-0">
               <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-[11px] font-bold ${currentPersona.color}`}>
                 {currentPersona.label.charAt(0)}
               </span>
@@ -144,8 +155,6 @@ export default function Layout({ children }) {
                   </option>
                 ))}
               </select>
-
-              {/* Logout button */}
               <button
                 onClick={handleLogout}
                 className="flex items-center gap-1.5 px-2.5 py-1 text-[12px] text-white/60 hover:text-white hover:bg-white/10 rounded-md transition-colors"
@@ -158,10 +167,99 @@ export default function Layout({ children }) {
               </button>
             </div>
           )}
+
+          {/* Mobile: Avatar + Hamburger */}
+          <div className="flex md:hidden items-center gap-2">
+            {mounted && (
+              <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-[11px] font-bold ${currentPersona.color}`}>
+                {currentPersona.label.charAt(0)}
+              </span>
+            )}
+            <button
+              onClick={() => setIsMenuOpen((v) => !v)}
+              className="p-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+              aria-label="Menü"
+            >
+              {isMenuOpen ? (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Dropdown */}
+        {isMenuOpen && (
+          <div className="absolute top-full left-0 right-0 bg-brand-navy shadow-lg md:hidden border-t border-white/10">
+            {/* Nav links */}
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setIsMenuOpen(false)}
+                className={`block px-6 py-3 text-[14px] border-b border-white/10 transition-colors ${
+                  router.pathname === link.href
+                    ? "text-white bg-white/10"
+                    : "text-white/80 hover:text-white hover:bg-white/5"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <button
+              onClick={() => setIsMenuOpen(false)}
+              className="block w-full text-left px-6 py-3 text-[14px] text-white/80 hover:text-white hover:bg-white/5 border-b border-white/10 transition-colors"
+            >
+              Eğitimler
+            </button>
+
+            {/* Persona switcher */}
+            <div className="border-t border-white/20 px-6 py-3">
+              <p className="text-[10px] text-white/40 uppercase tracking-wider mb-2 font-semibold">Persona</p>
+              {PERSONAS.map((p) => (
+                <button
+                  key={p.key}
+                  onClick={() => handlePersonaClick(p.key)}
+                  className="flex items-center gap-2.5 w-full py-2 text-[13px] transition-colors text-left"
+                >
+                  <span className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-[10px] font-bold shrink-0 ${p.color}`}>
+                    {p.label.charAt(0)}
+                  </span>
+                  <span className={persona === p.key ? "text-white font-medium" : "text-white/60"}>
+                    {p.label}
+                  </span>
+                  <span className="text-white/40 text-[11px]">({p.role})</span>
+                  {persona === p.key && (
+                    <svg className="w-3.5 h-3.5 text-white ml-auto shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  )}
+                </button>
+              ))}
+            </div>
+
+            {/* Logout */}
+            <div className="border-t border-white/20">
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 w-full px-6 py-3.5 text-[14px] text-white/60 hover:text-white hover:bg-white/5 transition-colors"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Çıkış yap
+              </button>
+            </div>
+          </div>
+        )}
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 py-8 flex-1 w-full">{children}</main>
+      <main className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8 flex-1 w-full">{children}</main>
     </div>
   );
 }
