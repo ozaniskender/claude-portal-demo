@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import Layout from "@/components/Layout";
+import AupModal from "@/components/AupModal";
 import users from "@/data/users.json";
 import Link from "next/link";
 
@@ -52,7 +53,8 @@ export default function Talep() {
   const [level, setLevel] = useState("Consultant");
   const [tool, setTool] = useState("Chat");
   const [gerekce, setGerekce] = useState("");
-  const [aup, setAup] = useState(false);
+  const [isAupModalOpen, setIsAupModalOpen] = useState(false);
+  const [aupAccepted, setAupAccepted] = useState(false);
   const [veri, setVeri] = useState(false);
   const [egitim, setEgitim] = useState(false);
 
@@ -101,7 +103,7 @@ export default function Talep() {
   const activeUser = users.find((u) => u.id === (persona === "Zeynep" ? "zeynep" : "burcak"));
   const managerUser = users.find((u) => u.id === activeUser?.manager);
 
-  const isSubmittable = aup && veri && egitim;
+  const isSubmittable = aupAccepted && veri && egitim;
 
   const requestDate = new Date().toLocaleDateString("tr-TR", {
     day: "numeric", month: "long", year: "numeric",
@@ -214,14 +216,46 @@ export default function Talep() {
               <p className="text-[13px] font-semibold text-content-primary mb-3.5 pb-2 border-b border-surface-bordered">
                 Onaylar
               </p>
+
+              {/* AUP — modal akışı */}
+              <div className="mb-1">
+                <label
+                  className="flex items-start gap-3 p-3 border border-surface-bordered rounded-lg hover:bg-surface-muted transition-colors cursor-pointer"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (!aupAccepted) {
+                      setIsAupModalOpen(true);
+                    } else {
+                      setAupAccepted(false);
+                    }
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={aupAccepted}
+                    readOnly
+                    className="mt-1 pointer-events-none accent-brand-primary"
+                  />
+                  <div className="flex-1">
+                    <span className="text-[13px] font-medium text-content-primary">
+                      AUP onayı
+                    </span>
+                    <p className="text-xs text-content-secondary mt-0.5">
+                      {aupAccepted
+                        ? "✓ Definex Claude Kullanım Politikası'nı okudum ve kabul ettim"
+                        : "Definex Claude Kullanım Politikası'nı incelemek için tıklayın"}
+                    </p>
+                  </div>
+                  {!aupAccepted && (
+                    <span className="text-xs text-brand-primary font-medium whitespace-nowrap mt-0.5">
+                      Politikayı oku →
+                    </span>
+                  )}
+                </label>
+              </div>
+
+              {/* Diğer iki checkbox — değişmedi */}
               {[
-                {
-                  id: "aup", checked: aup, onChange: setAup,
-                  content: (
-                    <><span className="font-medium">AUP onayı</span> — Definex Claude Kullanım Politikası&apos;nı okudum ve kabul ediyorum.{" "}
-                      <a href="#" className="text-brand-primary hover:underline">Politikayı görüntüle</a></>
-                  ),
-                },
                 {
                   id: "veri", checked: veri, onChange: setVeri,
                   content: (
@@ -246,6 +280,16 @@ export default function Talep() {
                 </label>
               ))}
             </div>
+
+            {/* AUP Modal */}
+            <AupModal
+              isOpen={isAupModalOpen}
+              onClose={() => setIsAupModalOpen(false)}
+              onAccept={() => {
+                setAupAccepted(true);
+                setIsAupModalOpen(false);
+              }}
+            />
 
             {/* Footer */}
             <div className="flex justify-between items-center pt-5 mt-3 border-t border-surface-bordered">
